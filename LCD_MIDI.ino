@@ -106,7 +106,7 @@ void leftPress()
 
 }
 
-void valueUp()
+void ccUp()
 {
   lcd.setCursor(12, 1);
   lcd.print("   ");
@@ -115,7 +115,7 @@ void valueUp()
   lcd.print(cc);
 }
 
-void valueDown()
+void ccDown()
 {
   lcd.setCursor(12, 1);
   lcd.print("   ");
@@ -124,9 +124,26 @@ void valueDown()
   lcd.print(cc);
 }
 
+void channelUp()
+{
+  lcd.setCursor(7, 1);
+  lcd.print("  ");
+  channel = (channel == 16) ? 1 : channel + 1;
+  lcd.setCursor(7, 1);
+  lcd.print(channel);
+}
+
+void channelDown()
+{
+  lcd.setCursor(7, 1);
+  lcd.print("  ");
+  channel = (channel == 1) ? 16 : channel - 1;
+  lcd.setCursor(7, 1);
+  lcd.print(channel);
+}
 void sendMidiCC(int val)
 {
-  Serial.write(176);
+  Serial.write(176 + (channel - 1));
   Serial.write(cc);
   Serial.write(val);
 
