@@ -187,11 +187,6 @@ void sendMidiCC(int val)
   lcd.print(pot1_val);
 }
 
-// void valueUp()
-// {
-//   if(cursor_position = )
-// }
-
 void initPins()
 {
   pinMode(POT1_PIN, INPUT);
