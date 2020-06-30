@@ -4,10 +4,13 @@
 #include "Button.h"
 #include <LiquidCrystal.h>
 
-MidiSender      midiSender;
-TestController  testPot(Constants::POT1_PIN);
-LiquidCrystal   lcd(12, 11, 5, 4, 3, 2);
 Button up(Constants::UP_BUTTON_PIN);
+Button down(Constants::DOWN_BUTTON_PIN);
+Button left(Constants::LEFT_BUTTON_PIN);
+Button right(Constants::RIGHT_BUTTON_PIN);
+MidiSender midiSender;
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+TestController testPot(Constants::POT1_PIN);
 
 void setup()
 {
@@ -24,7 +27,7 @@ void loop()
 {
   lcd.setCursor(0, 0);
   lcd.print(testPot.GetVal());
-  if(up.isPressed())
+  if(down.isPressed())
     midiSender.SendCC(1, 7, 110);
   delay(10);
 }

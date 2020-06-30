@@ -4,12 +4,12 @@
 
 class Button
 {
-  int _buttonPin;
-  int _lastState = 1;
+  byte _buttonPin;
+  byte _lastState = 1;
 private:
   /* data */
 public:
-  Button::Button(int buttonPin)
+  Button::Button(byte buttonPin)
   {
     _buttonPin = buttonPin;
     pinMode(_buttonPin, INPUT);
