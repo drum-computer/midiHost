@@ -5,13 +5,14 @@
 class Button
 {
   int _buttonPin;
+  int _lastState = 1;
 private:
   /* data */
 public:
   Button::Button(int buttonPin)
   {
     _buttonPin = buttonPin;
-    pinMode(_buttonPin, INPUT_PULLUP);
+    pinMode(_buttonPin, INPUT);
   }
 
   Button::~Button()
@@ -20,7 +21,15 @@ public:
 
   bool isPressed()
   {
-    return !digitalRead(_buttonPin);
+    if (digitalRead(_buttonPin) == 0 && _lastState == 1)
+    {
+      _lastState = 0;
+      return true;
+    } else if (digitalRead(_buttonPin) == 1 && _lastState == 0)
+    {
+      _lastState = 1;
+    }
+    return false;
   }
 };
 
