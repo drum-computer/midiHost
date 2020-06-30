@@ -1,11 +1,13 @@
 #include "MidiSender.h"
 #include "Constants.h"
 #include "TestController.h"
+#include "Button.h"
 #include <LiquidCrystal.h>
 
 MidiSender      midiSender;
 TestController  testPot(Constants::POT1_PIN);
 LiquidCrystal   lcd(12, 11, 5, 4, 3, 2);
+Button up(Constants::UP_BUTTON_PIN);
 
 void setup()
 {
@@ -22,7 +24,7 @@ void loop()
 {
   lcd.setCursor(0, 0);
   lcd.print(testPot.GetVal());
-  if(testPot.hasChanged())
+  if(up.isPressed())
     midiSender.SendCC(1, 7, 110);
   delay(10);
 }
