@@ -16,7 +16,6 @@ void setup()
 {
   // start midi sender
   midiSender.Start();
-  midiSender.SendCC(1, 7, 100);
 
   // start lcd display
   lcd.begin(16, 2);
