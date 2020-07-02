@@ -35,6 +35,25 @@ public:
     LiquidCrystal::print(val);
   }
 
+  void updateCursorPosition(byte position)
+  {
+    switch (position)
+    {
+    case 0:
+      LiquidCrystal::setCursor(4, 1);
+      break;
+    case 1:
+      LiquidCrystal::setCursor(8, 1);
+      break;
+    // unused right now
+    case 2:
+      LiquidCrystal::setCursor(4, 1);
+      break;
+    case 3:
+      LiquidCrystal::setCursor(8, 1);
+      break;
+    }
+  }
 };
 
 

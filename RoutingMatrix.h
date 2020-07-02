@@ -18,6 +18,20 @@ public:
       for(int j = 0; j < NUM_CONTROLLERS; j++)
         matrix[i][j] = j;
   }
+
+  byte increaseValue(byte cursor_pos, byte midiChannel, byte cc)
+  {
+    byte value = matrix[midiChannel][cc];
+    switch (cursor_pos)
+    {
+    case 0: // means we are editing output channel
+      
+      break;
+    
+    default:
+      break;
+    }
+  }
 };
 
 

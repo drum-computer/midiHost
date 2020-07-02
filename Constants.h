@@ -5,4 +5,5 @@ namespace Constants
   const byte RIGHT_BUTTON_PIN =     9;
   const byte UP_BUTTON_PIN =        8;
   const byte DOWN_BUTTON_PIN =      7;
+  const byte NUM_CURSOR_POS =       2;
 }
