@@ -29,9 +29,9 @@ void setup()
   lcd.begin(16, 2);
   // print some initial data
   lcd.setCursor(0, 0);
-  lcd.print("->ch10cc127v100");
+  lcd.print("->ch01cc007v100");
   lcd.setCursor(0, 1);
-  lcd.print("<-ch10cc127v100");
+  lcd.print("<-ch01cc007v100");
   lcd.cursor();
   lcd.blink();
 }
