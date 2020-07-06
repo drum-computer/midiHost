@@ -1,36 +1,60 @@
 #ifndef RoutingMatrix_h
 #define RoutingMatrix_h
-#define NUM_CHANNELS 8
-#define NUM_CONTROLLERS 128
 #include "Arduino.h"
-
+#include "Constants.h"
 
 class RoutingMatrix
 {
 private:
   /* data */
 public:
-  byte matrix[NUM_CHANNELS][NUM_CONTROLLERS];
+  int matrix[Constants::MATRIX_SIZE];
   RoutingMatrix()
   {
     // init default routing matrix
-    for(int i = 0; i < NUM_CHANNELS; i++)
-      for(int j = 0; j < NUM_CONTROLLERS; j++)
-        matrix[i][j] = j;
+    for(int i = 0; i < Constants::MATRIX_SIZE; i++)
+      matrix[i] = i;
   }
 
-  byte increaseValue(byte cursor_pos, byte midiChannel, byte cc)
+  int increaseValue(byte cursor_pos, byte midiChannel, byte cc)
   {
-    byte value = matrix[midiChannel][cc];
+    int index = (midiChannel * Constants::NUM_CONTROLLERS) + cc;
+    // read old value
+    int value = matrix[index];
     switch (cursor_pos)
     {
     case 0: // means we are editing output channel
-      
+      value = (value + Constants::NUM_CONTROLLERS) >= Constants::MATRIX_SIZE 
+                    ? 
+                    value % Constants::NUM_CONTROLLERS
+                    : 
+                    value + Constants::NUM_CONTROLLERS;
       break;
-    
-    default:
+
+    case 1: // means we are editing cc number
+      // get channel number to which controller belongs
+      byte channel_offset = value / Constants::NUM_CONTROLLERS;
+      value = (value + 1) >= ((Constants::NUM_CONTROLLERS * channel_offset) 
+                    + Constants::NUM_CONTROLLERS)
+                      ? 
+                      (Constants::NUM_CONTROLLERS * channel_offset)
+                      : 
+                      (value + 1);
       break;
     }
+
+    // write new value
+    matrix[index] = value;
+    return value;
+  }
+
+  void route(byte input_midi_channel, byte input_cc, 
+              byte* output_midi_channel, byte* output_cc)
+  {
+    int index = (input_midi_channel * Constants::NUM_CONTROLLERS) + input_cc;
+    *output_midi_channel = matrix[index] / Constants::NUM_CONTROLLERS;
+    *output_cc = matrix[index] % Constants::NUM_CONTROLLERS;
+
   }
 };
 

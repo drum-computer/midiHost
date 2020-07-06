@@ -16,8 +16,8 @@ RoutingMatrix matrix;
 
 // hardcoded for now, but should get 
 // automatically picked from midi controller
-const byte midiChannel = 0;
-const byte cc = 7;
+const byte input_midi_channel = 0;
+const byte input_cc = 7;
 
 
 void setup()
@@ -39,7 +39,6 @@ void setup()
 void loop()
 {
   static byte cursor_pos = 0;
-  // lcd.setCursor(0, 0);
   if (testPot.hasChanged())
   {
     lcd.printInputVal(testPot.GetVal());
@@ -63,15 +62,19 @@ void loop()
   
   if(up.isPressed())
   {
-    byte val = matrix.increaseValue(cursor_pos, midiChannel, cc);
-    lcd.updateDisplayValue(cursor_pos, val);
+    int new_val = matrix.increaseValue(cursor_pos, input_midi_channel, input_cc);
+    lcd.updateDisplayValue(cursor_pos, new_val);
   }
 
   // send test midi message
   if(down.isPressed())
   {
-    byte cc = matrix.matrix[0][7];
-    midiSender.SendCC(1, cc, 110);
+    // all this code is for testing purposes only. 
+    // down button is being used as a midi trigger
+    byte output_midi_channel;
+    byte output_cc;
+    matrix.route(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
+    midiSender.SendCC(output_midi_channel, output_cc, 110);
   }
 
     

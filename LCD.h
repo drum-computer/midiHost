@@ -2,6 +2,7 @@
 #define LCD_h
 #include "Arduino.h"
 #include "LiquidCrystal.h"
+#include "Constants.h"
 
 class LCD : public LiquidCrystal
 {
@@ -51,6 +52,24 @@ public:
       break;
     case 3:
       LiquidCrystal::setCursor(8, 1);
+      break;
+    }
+  }
+
+  void updateDisplayValue(byte position, int val)
+  {
+    byte display_val;
+    switch (position)
+    {
+    case 0: // means we are changing channel number
+      display_val = val / Constants::NUM_CONTROLLERS;
+      LiquidCrystal::setCursor(4, 1);
+      LiquidCrystal::print(display_val);
+      break;
+    case 1: // means we are changing channel number
+      display_val = val % Constants::NUM_CONTROLLERS;
+      LiquidCrystal::setCursor(8, 1);
+      LiquidCrystal::print(display_val);
       break;
     }
   }

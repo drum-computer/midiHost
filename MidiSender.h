@@ -23,7 +23,7 @@ public:
 
     void MidiSender::SendCC(byte channel, byte cc, byte value)
     {
-        Serial.write(176 + (channel - 1));
+        Serial.write(176 + channel);
         Serial.write(cc);
         Serial.write(value);
     }
