@@ -5,8 +5,8 @@
 class TestController
 {
   int _controllerPin;
-  int _prevVal = 0;
-  int val = 0;
+  byte _prevVal = 0;
+  byte val = 0;
 private:
   /* data */
 public:
@@ -21,7 +21,7 @@ public:
   {
   }
 
-  int TestController::GetVal()
+  byte TestController::GetVal()
   { 
     val = map(analogRead(_controllerPin), 0, 1023, 0, 127);
     return val;

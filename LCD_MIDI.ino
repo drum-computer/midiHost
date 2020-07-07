@@ -10,7 +10,7 @@ Button down(Constants::DOWN_BUTTON_PIN);
 Button left(Constants::LEFT_BUTTON_PIN);
 Button right(Constants::RIGHT_BUTTON_PIN);
 MidiSender midiSender;
-LCD lcd(12, 11, 5, 4, 3, 2);
+LCD lcd(A0, 6, 5, 4, 3, 2);
 TestController testPot(Constants::POT1_PIN);
 RoutingMatrix matrix;
 
@@ -24,7 +24,6 @@ void setup()
 {
   // start midi sender
   midiSender.Start();
-
   // start lcd display
   lcd.begin(16, 2);
   // print some initial data
@@ -38,12 +37,15 @@ void setup()
 
 void loop()
 {
+//  Serial.println(testPot.GetVal());
   static byte cursor_pos = 0;
+  byte pot_val = testPot.GetVal();
   if (testPot.hasChanged())
   {
-    lcd.printInputVal(testPot.GetVal());
+    lcd.printInputVal(pot_val);
     delay(1);
-    lcd.printOutputVal(testPot.GetVal());
+    lcd.printOutputVal(pot_val);
+    
   }
   
   if(right.isPressed())
@@ -74,7 +76,7 @@ void loop()
     byte output_midi_channel;
     byte output_cc;
     matrix.route(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
-    midiSender.SendCC(output_midi_channel, output_cc, 110);
+    midiSender.SendCC(output_midi_channel, output_cc, pot_val);
   }
 
     
