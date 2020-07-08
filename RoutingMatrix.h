@@ -16,19 +16,20 @@ public:
       matrix[i] = i;
   }
 
-  int increaseValue(byte cursor_pos, byte midiChannel, byte cc)
+  byte changeRouting(byte cursor_pos, byte midiChannel, byte cc)
   {
     int index = (midiChannel * Constants::NUM_CONTROLLERS) + cc;
     // read old value
     int value = matrix[index];
+    byte display_val;
     switch (cursor_pos)
     {
     case 0: // means we are editing output channel
       value = (value + Constants::NUM_CONTROLLERS) >= Constants::MATRIX_SIZE 
-                    ? 
-                    value % Constants::NUM_CONTROLLERS
-                    : 
-                    value + Constants::NUM_CONTROLLERS;
+                    ? value % Constants::NUM_CONTROLLERS
+                    : value + Constants::NUM_CONTROLLERS;
+
+      display_val = value / Constants::NUM_CONTROLLERS;
       break;
 
     case 1: // means we are editing cc number
@@ -36,16 +37,16 @@ public:
       byte channel_offset = value / Constants::NUM_CONTROLLERS;
       value = (value + 1) >= ((Constants::NUM_CONTROLLERS * channel_offset) 
                     + Constants::NUM_CONTROLLERS)
-                      ? 
-                      (Constants::NUM_CONTROLLERS * channel_offset)
-                      : 
-                      (value + 1);
+                      ? (Constants::NUM_CONTROLLERS * channel_offset)
+                      : (value + 1);
+
+      display_val = value % Constants::NUM_CONTROLLERS;
       break;
     }
 
     // write new value
     matrix[index] = value;
-    return value;
+    return display_val;
   }
 
   void route(byte input_midi_channel, byte input_cc, 

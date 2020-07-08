@@ -5,13 +5,21 @@
 #include "LCD.h"
 #include "RoutingMatrix.h"
 
+
+// initialize interface navigation buttons
 Button up(Constants::UP_BUTTON_PIN);
 Button down(Constants::DOWN_BUTTON_PIN);
 Button left(Constants::LEFT_BUTTON_PIN);
 Button right(Constants::RIGHT_BUTTON_PIN);
+
 MidiSender midiSender;
-LCD lcd(A0, 6, 5, 4, 3, 2);
+
+LCD lcd(Constants::LCD_RS, Constants::LCD_E, 
+        Constants::LCD_D4, Constants::LCD_D5,
+        Constants::LCD_D6, Constants::LCD_D7);
+
 TestController testPot(Constants::POT1_PIN);
+
 RoutingMatrix matrix;
 
 // hardcoded for now, but should get 
@@ -24,48 +32,55 @@ void setup()
 {
   // start midi sender
   midiSender.Start();
-  // start lcd display
+
+  // start lcd display 16 chars 2 line mode
   lcd.begin(16, 2);
+
   // print some initial data
   lcd.setCursor(0, 0);
   lcd.print("->ch01cc007v100");
   lcd.setCursor(0, 1);
   lcd.print("<-ch01cc007v100");
+  
+  //enable blinking cursor
   lcd.cursor();
   lcd.blink();
 }
 
 void loop()
 {
-//  Serial.println(testPot.GetVal());
+
   static byte cursor_pos = 0;
-  byte pot_val = testPot.GetVal();
+  byte test_pot_val = testPot.GetVal();
   if (testPot.hasChanged())
   {
-    lcd.printInputVal(pot_val);
-    delay(1);
-    lcd.printOutputVal(pot_val);
-    
+    // shpw current input and output value
+    // later I'm planning to add value transform
+    // hence 2 different functions
+    cursor_pos = 2; // hardcoded for now, don't know how to make it prettier
+    lcd.updateCursorPosition(cursor_pos);
+    lcd.updateDisplayValue(cursor_pos, test_pot_val);
   }
   
   if(right.isPressed())
   {
     cursor_pos = (cursor_pos == Constants::NUM_CURSOR_POS - 1) ? 0 
-                                                              : cursor_pos + 1;
+                  : cursor_pos + 1;
     lcd.updateCursorPosition(cursor_pos);
   }
   
   if(left.isPressed())
   {
     cursor_pos = (cursor_pos == 0) ? Constants::NUM_CURSOR_POS - 1 
-                                                              : cursor_pos - 1;
+                  : cursor_pos - 1;
     lcd.updateCursorPosition(cursor_pos);
   }
   
   if(up.isPressed())
   {
-    int new_val = matrix.increaseValue(cursor_pos, input_midi_channel, input_cc);
-    lcd.updateDisplayValue(cursor_pos, new_val);
+    byte display_val = matrix.changeRouting(cursor_pos, 
+                                            input_midi_channel, input_cc);
+    lcd.updateDisplayValue(cursor_pos, display_val);
   }
 
   // send test midi message
@@ -76,7 +91,7 @@ void loop()
     byte output_midi_channel;
     byte output_cc;
     matrix.route(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
-    midiSender.SendCC(output_midi_channel, output_cc, pot_val);
+    midiSender.SendCC(output_midi_channel, output_cc, test_pot_val);
   }
 
     
