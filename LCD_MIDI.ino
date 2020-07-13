@@ -36,8 +36,9 @@ USBH_MIDI Midi(&Usb);
 
 // hardcoded for now, but should get 
 // automatically picked from midi controller
-const byte input_midi_channel = 0;
-const byte input_cc = 7;
+byte input_midi_channel = 0;
+byte input_cc = 7;
+byte controller_value = 0;
 
 
 void setup()
@@ -122,7 +123,7 @@ void loop()
     byte output_midi_channel;
     byte output_cc;
     matrix.route(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
-    midiSender.SendCC(output_midi_channel, output_cc, test_pot_val);
+    midiSender.SendCC(output_midi_channel, output_cc, controller_value);
   }
   
   if ( Usb.getUsbTaskState() == USB_STATE_RUNNING )
@@ -136,13 +137,13 @@ void loop()
 
 void midiPoll()
 {
-  uint8_t outBuf[ 3 ];
+  uint8_t outBuf[3];
   uint8_t size;
 
-  do {
-    if ( (size = Midi.RecvData(outBuf)) > 0 ) {
-      //MIDI Output
-      Serial.write(outBuf, size);
-    }
-  } while (size > 0);
+  if ((size = Midi.RecvData(outBuf)) > 0) {
+    input_midi_channel = outBuf[0];
+    input_cc = outBuf[1];
+    controller_value = outBuf[2];
+    // Serial.write(outBuf, size);
+  }
 }
