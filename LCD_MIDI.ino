@@ -5,6 +5,9 @@
 #include "LCD.h"
 #include "RoutingMatrix.h"
 
+#include "usbhub.h"
+#include "usbh_midi.h"
+#include "SPI.h"
 
 // initialize interface navigation buttons
 Button up(Constants::UP_BUTTON_PIN);
@@ -21,6 +24,15 @@ LCD lcd(Constants::LCD_RS, Constants::LCD_E,
 TestController testPot(Constants::POT1_PIN);
 
 RoutingMatrix matrix;
+
+
+  /*
+
+    Raw insertion for now
+
+  */
+USB Usb;
+USBH_MIDI Midi(&Usb);
 
 // hardcoded for now, but should get 
 // automatically picked from midi controller
@@ -45,11 +57,30 @@ void setup()
   //enable blinking cursor
   lcd.cursor();
   lcd.blink();
+
+  /*
+
+    Raw insertion for now
+
+  */
+  if (Usb.Init() == -1) {
+    while (1); //halt
+  }//if (Usb.Init() == -1...
+  delay( 200 );
+
 }
+
+  /*
+
+    Raw insertion for now
+
+  */
+
+void midiPoll();
 
 void loop()
 {
-
+  Usb.Task();
   static byte cursor_pos = 0;
   byte test_pot_val = testPot.GetVal();
   if (testPot.hasChanged())
@@ -93,7 +124,25 @@ void loop()
     matrix.route(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
     midiSender.SendCC(output_midi_channel, output_cc, test_pot_val);
   }
+  
+  if ( Usb.getUsbTaskState() == USB_STATE_RUNNING )
+  {
+    midiPoll();
+  }
 
     
   delay(10);
+}
+
+void midiPoll()
+{
+  uint8_t outBuf[ 3 ];
+  uint8_t size;
+
+  do {
+    if ( (size = Midi.RecvData(outBuf)) > 0 ) {
+      //MIDI Output
+      Serial.write(outBuf, size);
+    }
+  } while (size > 0);
 }
