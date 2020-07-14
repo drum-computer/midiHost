@@ -8,3 +8,15 @@ The idea is to convert any incoming midi message from midi-compliant usb control
 
 **Prototype**
 ![Prototype](img/prototype.jpg)
+
+**Current limitations**
+1. Can't adjust position backwards, only in one direction. 
+Meaning that if you want to change a value from 2 to 1 
+you have to go all the way through 127
+
+2. Can't store routing table, so all settings are lost on restart
+
+**Upcoming features**
+1. Ability to send nrpn messages in addition to cc
+
+2. Multiple midi out ports 

@@ -49,7 +49,7 @@ public:
     return display_val;
   }
 
-  void route(byte input_midi_channel, byte input_cc, 
+  void lookup(byte input_midi_channel, byte input_cc, 
               byte* output_midi_channel, byte* output_cc)
   {
     int index = (input_midi_channel * Constants::NUM_CONTROLLERS) + input_cc;

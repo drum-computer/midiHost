@@ -45,7 +45,17 @@ public:
       LiquidCrystal::setCursor(8, 1);
       break;
     case 2: 
+      LiquidCrystal::setCursor(12, 1);
+      break;
+    case 3: 
+      LiquidCrystal::setCursor(4, 0);
+      break;
+    case 4: 
+      LiquidCrystal::setCursor(8, 0);
+      break;
+    case 5: 
       LiquidCrystal::setCursor(12, 0);
+      break;
     }
   }
 
@@ -55,15 +65,15 @@ public:
     
     switch (cursor_position)
     {
-    case 0: // means we are changing channel number
+    case 0: case 3: // means we are changing channel number
       printLeadingZeroes(display_val, 2);
       LiquidCrystal::print(display_val);
       break;
-    case 1: // means we are changing cc number
+    case 1: case 4: // means we are changing cc number
       printLeadingZeroes(display_val, 3);
       LiquidCrystal::print(display_val);
       break;
-    case 2: // means we are changing test pot val
+    case 2: case 5: // means we are changing test pot val
       printLeadingZeroes(display_val, 3);
       LiquidCrystal::print(display_val);
       break;
