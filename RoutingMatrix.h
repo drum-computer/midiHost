@@ -29,7 +29,8 @@ public:
                     ? value % Constants::NUM_CONTROLLERS
                     : value + Constants::NUM_CONTROLLERS;
 
-      display_val = value / Constants::NUM_CONTROLLERS;
+      // add 1 for readability remap display value of channels from 0->15 to 1->16
+      display_val = value / Constants::NUM_CONTROLLERS + 1;
       break;
 
     case 1: // means we are editing cc number

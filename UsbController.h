@@ -42,9 +42,12 @@ public:
 
   void readController(byte *midi_channel, byte *cc, byte *value)
   {
-    *midi_channel = midi_buffer[0] - Constants::CC_START_ADDRESS;
-    *cc = midi_buffer[1];
-    *value = midi_buffer[2];
+    do
+    {
+      *midi_channel = midi_buffer[0] - Constants::CC_START_ADDRESS;
+      *cc = midi_buffer[1];
+      *value = midi_buffer[2];
+    } while (Midi.RecvData(midi_buffer) > 0);
   }
 };
 
