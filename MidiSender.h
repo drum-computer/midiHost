@@ -24,7 +24,7 @@ public:
 
     void MidiSender::sendCC(byte channel, byte cc, byte value)
     {
-        Serial.write(Constants::CC_START_ADDRESS + channel);
+        Serial.write(/*Constants::CC_START_ADDRESS + */channel);
         Serial.write(cc);
         Serial.write(value);
     }
