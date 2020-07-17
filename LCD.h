@@ -14,7 +14,7 @@ private:
     for(byte i = 0; i < max_digits - 1; i++)
     {
       if (val == 0)
-        LiquidCrystal::print("0");
+        LiquidCrystal::print(F("0"));
       else
         max_value *= 10; 
     }
@@ -23,7 +23,7 @@ private:
     if (val != 0)
       while (val < max_value)
       {
-        LiquidCrystal::print("0");
+        LiquidCrystal::print(F("0"));
         val *= 10;
       }
   }

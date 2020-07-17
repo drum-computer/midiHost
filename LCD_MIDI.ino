@@ -33,7 +33,7 @@ void setup()
 {
   // start midi sender
   midiSender.start();
-
+  
   // start usb controller
   usbController.start();
 
@@ -42,9 +42,9 @@ void setup()
 
   // print some initial data
   lcd.setCursor(0, 0);
-  lcd.print("->ch01cc000v000");
+  lcd.print(F("->ch01cc000v000"));
   lcd.setCursor(0, 1);
-  lcd.print("<-ch01cc000v000");
+  lcd.print(F("<-ch01cc000v000"));
   
   //enable blinking cursor
   lcd.cursor();
@@ -133,6 +133,7 @@ void loop()
 
     routingMatrix.lookup(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
     
+    
     // add 1 because we used to 1 to 16 midi channel enumeration
     lcd.updateDisplayValue(0, output_midi_channel + 1);
     lcd.updateDisplayValue(1, output_cc);
@@ -142,5 +143,5 @@ void loop()
   }
 
   // not sure if it's needed, just for stability  
-  delay(10);
+  delay(1);
 }

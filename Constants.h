@@ -21,11 +21,26 @@ namespace Constants
 
   // display number of possible positions for the display cursor 
   const byte NUM_CURSOR_POS =       2;
+  enum position_label { Init,
+                        Input_channel,
+                        Input_cc,
+                        Input_value,
+                        Output_channel,
+                        Output_cc,
+                        Output_value};
+
+  const byte cursor_position[7][2] = {{0, 0}, 
+                                      {4, 0},
+                                      {8, 0},
+                                      {12, 0}, 
+                                      {4, 1},
+                                      {8, 1},
+                                      {12, 1}};
 
   // midi and matrix settings
-  const byte CC_START_ADDRESS = 176;
-  const byte NUM_CHANNELS = 4;
-  const byte NUM_CONTROLLERS = 128;
+  const byte CC_START_ADDRESS =   176;
+  const byte NUM_CHANNELS =         4;
+  const byte NUM_CONTROLLERS =    128;
   const int MATRIX_SIZE = NUM_CHANNELS * NUM_CONTROLLERS;
 }
 
