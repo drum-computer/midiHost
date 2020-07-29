@@ -41,7 +41,6 @@ namespace Constants
                         
 
   // midi and matrix settings
-  const byte CC_START_ADDRESS =   176;
   const byte NUM_CHANNELS =         4;
   const byte NUM_CONTROLLERS =    128;
   const int MATRIX_SIZE = NUM_CHANNELS * NUM_CONTROLLERS;

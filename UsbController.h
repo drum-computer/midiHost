@@ -13,6 +13,7 @@ private:
   USB Usb;
   USBH_MIDI Midi;
   byte midi_buffer[3];
+  byte cc_start_offset = 176;
 
 public:
   UsbController() : Midi(&Usb)
@@ -42,12 +43,9 @@ public:
 
   void readController(byte *midi_channel, byte *cc, byte *value)
   {
-    // do
-    // {
-      *midi_channel = midi_buffer[0] - Constants::CC_START_ADDRESS;
-      *cc = midi_buffer[1];
-      *value = midi_buffer[2];
-    // } while (Midi.RecvData(midi_buffer) > 0);
+    *midi_channel = midi_buffer[0] - cc_start_offset;
+    *cc = midi_buffer[1];
+    *value = midi_buffer[2];
   }
 };
 
