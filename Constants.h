@@ -21,6 +21,7 @@ namespace Constants
 
   // display number of possible positions for the display cursor 
   const byte NUM_CURSOR_POS =       2;
+  const byte SCREEN_REFRESH_RATE = 100;
   enum position_label { Init,
                         Input_channel,
                         Input_cc,
@@ -37,11 +38,16 @@ namespace Constants
                                       {8, 1},
                                       {12, 1}};
 
+                        
+
   // midi and matrix settings
   const byte CC_START_ADDRESS =   176;
   const byte NUM_CHANNELS =         4;
   const byte NUM_CONTROLLERS =    128;
   const int MATRIX_SIZE = NUM_CHANNELS * NUM_CONTROLLERS;
+
+  // working mode
+  enum working_mode {monitor, edit};
 }
 
 #endif

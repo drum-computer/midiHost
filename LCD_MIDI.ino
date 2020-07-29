@@ -29,6 +29,10 @@ RoutingMatrix routingMatrix;
 // this object interfaces with usb controller
 UsbController usbController;
 
+Constants::working_mode working_mode;
+
+unsigned long time;
+
 void setup()
 {
   // start midi sender
@@ -39,6 +43,9 @@ void setup()
 
   // start lcd display 16 chars 2 line mode
   lcd.begin(16, 2);
+
+  // init working mode
+  working_mode = Constants::edit;
 
   // print some initial data
   lcd.setCursor(0, 0);
@@ -53,6 +60,9 @@ void setup()
 
 void loop()
 {
+  time = millis();
+  static unsigned long last_screen_update = 0;
+
   // these variables are updated by usbController.readController()
   static byte input_midi_channel;
   static byte input_cc;
@@ -67,19 +77,6 @@ void loop()
 
   // main usb task 
   usbController.task();
-  
-  // debug with text controller
-
-  // byte test_pot_val = testPot.GetVal();
-  // if (testPot.hasChanged())
-  // {
-  //   // shpw current input and output value
-  //   // later I'm planning to add value transform
-  //   // hence 2 different functions
-  //   cursor_pos = 2; // hardcoded for now, don't know how to make it prettier
-  //   lcd.updateCursorPosition(cursor_pos);
-  //   lcd.updateDisplayValue(cursor_pos, test_pot_val);
-  // }
   
   if(right.isPressed())
   {
@@ -118,28 +115,36 @@ void loop()
     /*
       When interacting with usb controller:
       1. Read data from controller 
-      2. Update display value from controller
-      3. Lookup corresponding routing from routingMatrix
-      4. Update corresponding output value
-      5. Send data to midi out port
+      2. Lookup corresponding routing from routingMatrix
+      3. Update corresponding output value
+      4. Send data to midi out port
     */
 
     usbController.readController(&input_midi_channel, &input_cc, &input_value);
     
-    // add 1 because we used to 1 to 16 midi channel enumeration
-    // lcd.updateDisplayValue(3, input_midi_channel + 1); 
-    // lcd.updateDisplayValue(4, input_cc);
-    // lcd.updateDisplayValue(5, input_value);
-
     routingMatrix.lookup(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
     
+    midiSender.sendCC(output_midi_channel, output_cc, input_value);
+
+
+  }
+
+  // check if it's time to refresh the screen
+  if((time - last_screen_update) > Constants::SCREEN_REFRESH_RATE
+      && working_mode == Constants::monitor)
+  {
+    // add 1 because we used to 1 to 16 midi channel enumeration
+    lcd.updateDisplayValue(3, input_midi_channel + 1); 
+    lcd.updateDisplayValue(4, input_cc);
+    lcd.updateDisplayValue(5, input_value);
     
     // add 1 because we used to 1 to 16 midi channel enumeration
-    // lcd.updateDisplayValue(0, output_midi_channel + 1);
-    // lcd.updateDisplayValue(1, output_cc);
-    // lcd.updateDisplayValue(2, input_value);
-    
-    midiSender.sendCC(output_midi_channel, output_cc, input_value);
+    lcd.updateDisplayValue(0, output_midi_channel + 1);
+    lcd.updateDisplayValue(1, output_cc);
+    lcd.updateDisplayValue(2, input_value);
+
+    // reset the timer
+    last_screen_update = time;
   }
 
   // not sure if it's needed, just for stability  
