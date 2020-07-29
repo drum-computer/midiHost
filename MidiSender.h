@@ -6,7 +6,8 @@
 class MidiSender
 {
 private:
-    /* data */
+    // this value is always 176 for cc
+    const byte cc_start_offset = 176;
 public:
 
     MidiSender::MidiSender(/* args */)
@@ -24,7 +25,7 @@ public:
 
     void MidiSender::sendCC(byte channel, byte cc, byte value)
     {
-        Serial.write(Constants::CC_START_ADDRESS + channel);
+        Serial.write(cc_start_offset + channel);
         Serial.write(cc);
         Serial.write(value);
     }

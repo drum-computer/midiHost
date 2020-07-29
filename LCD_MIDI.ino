@@ -130,6 +130,7 @@ void loop()
   }
 
   // check if it's time to refresh the screen
+  // in the future this will be main lcd loop for everything screen-related
   if((time - last_screen_update) > Constants::SCREEN_REFRESH_RATE
       && working_mode == Constants::monitor)
   {
