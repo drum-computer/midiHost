@@ -83,9 +83,9 @@ void loop()
   do {
     if ( (size = Midi.RecvData(outBuf)) > 0 ) {
       //MIDI Output
+      lcd.updateDisplayValue(1, size);
       Serial.write(outBuf, size);
-      vals_received++;
-      lcd.updateDisplayValue(1, vals_received);
+      // vals_received++;
       // midiSender.sendCC(outBuf[0], outBuf[1], outBuf[2]);
     }
   } while (size > 0);
@@ -169,7 +169,7 @@ void loop()
   // }
     // usbController.recv
   // if(usbController.hasChanged())
-  {
+  // {
   //   usbController.readController(&input_midi_channel, &input_cc, &input_value);
   //   vals_received++;
   //   midi_data[0] = Constants::CC_START_ADDRESS + input_midi_channel;
