@@ -127,17 +127,17 @@ void loop()
     usbController.readController(&input_midi_channel, &input_cc, &input_value);
     
     // add 1 because we used to 1 to 16 midi channel enumeration
-    lcd.updateDisplayValue(3, input_midi_channel + 1); 
-    lcd.updateDisplayValue(4, input_cc);
-    lcd.updateDisplayValue(5, input_value);
+    // lcd.updateDisplayValue(3, input_midi_channel + 1); 
+    // lcd.updateDisplayValue(4, input_cc);
+    // lcd.updateDisplayValue(5, input_value);
 
     routingMatrix.lookup(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
     
     
     // add 1 because we used to 1 to 16 midi channel enumeration
-    lcd.updateDisplayValue(0, output_midi_channel + 1);
-    lcd.updateDisplayValue(1, output_cc);
-    lcd.updateDisplayValue(2, input_value);
+    // lcd.updateDisplayValue(0, output_midi_channel + 1);
+    // lcd.updateDisplayValue(1, output_cc);
+    // lcd.updateDisplayValue(2, input_value);
     
     midiSender.sendCC(output_midi_channel, output_cc, input_value);
   }
