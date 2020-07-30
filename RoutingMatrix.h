@@ -58,6 +58,17 @@ public:
     *output_cc = matrix[index] % Constants::NUM_CONTROLLERS;
 
   }
+
+  int getDestination(int address)
+  {
+    return matrix[address];
+  }
+
+  void setDestination(int address, int value)
+  {
+    matrix[address] = value;
+  }
+
 };
 
 

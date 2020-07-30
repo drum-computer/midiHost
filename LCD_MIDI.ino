@@ -74,7 +74,7 @@ void loop()
   static byte output_midi_channel = 0;
   static byte output_cc = 0;
 
-  // this variable is updated by cursor button left/right
+  // this variable is updated by next button
   static byte cursor_pos = 0;
 
   // main usb task 
@@ -82,16 +82,46 @@ void loop()
   
   if(next.isPressed())
   {
-    
-    // lcd.updateCursorPosition(cursor_pos);
     updateCursorPosition(&cursor_pos);
   }
   
   if(up.isPressed())
   {
-    byte display_val = routingMatrix.changeRouting(cursor_pos, 
-                                            input_midi_channel, input_cc);
-    lcd.updateDisplayValue(cursor_pos, display_val);
+    //fjgure what needs to be changed
+    //change it 
+    //update display value
+    switch (cursor_pos)
+    {
+    case Constants::menu_entries::Output_channel:
+      // calculate lookup address
+      int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
+                              + input_cc;
+      
+      // retrieve value at that address
+      int old_value = routingMatrix.getDestination(lookup_address);
+      
+      // modify it
+      int new_value = 
+            (old_value + Constants::NUM_CONTROLLERS) >= Constants::MATRIX_SIZE 
+                                      ? old_value % Constants::NUM_CONTROLLERS
+                                      : old_value + Constants::NUM_CONTROLLERS;
+      
+      // put it back
+      routingMatrix.setDestination(lookup_address, new_value);
+
+      // update screen
+      lcd.updateDisplayValue(0, (new_value / Constants::NUM_CONTROLLERS) + 1);
+      break;
+
+    case Constants::menu_entries::Output_cc:
+      
+      break;
+    }
+
+
+    // byte display_val = routingMatrix.changeRouting(cursor_pos, 
+    //                                         input_midi_channel, input_cc);
+    // lcd.updateDisplayValue(cursor_pos, display_val);
   }
 
   // was used to send test midi message. Currently unused
@@ -138,11 +168,11 @@ void updateCursorPosition(byte* cursor_pos)
                   : *cursor_pos + 1;
   switch (*cursor_pos)
   {
-  case Constants::menu_entries::Output_cc:
+  case Constants::menu_entries::Output_channel:
     lcd.setCursor(4, 1);
     break;
   
-  case Constants::menu_entries::Output_channel:
+  case Constants::menu_entries::Output_cc:
     lcd.setCursor(8, 1);
     break;
 
