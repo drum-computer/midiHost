@@ -31,6 +31,8 @@ UsbController usbController;
 
 Constants::working_mode working_mode;
 
+Constants::menu_entries menu_entry;
+
 unsigned long time;
 
 void setup()

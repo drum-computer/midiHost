@@ -22,7 +22,9 @@ namespace Constants
   // display number of possible positions for the display cursor 
   const byte NUM_CURSOR_POS =       2;
   const byte SCREEN_REFRESH_RATE = 100;
-  enum position_label { Init,
+  
+  const byte menu_size;
+  enum menu_entries {   Init,
                         Input_channel,
                         Input_cc,
                         Input_value,
