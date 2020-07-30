@@ -10,7 +10,7 @@
 Button up(Constants::UP_BUTTON_PIN);
 Button down(Constants::DOWN_BUTTON_PIN);
 Button left(Constants::LEFT_BUTTON_PIN);
-Button next(Constants::RIGHT_BUTTON_PIN);
+Button next(Constants::NEXT_BUTTON_PIN);
 
 // object responsible for sending midi data through midi out port
 MidiSender midiSender;
@@ -87,13 +87,6 @@ void loop()
     updateCursorPosition(&cursor_pos);
   }
   
-  // if(left.isPressed())
-  // {
-  //   cursor_pos = (cursor_pos == 0) ? Constants::NUM_CURSOR_POS - 1 
-  //                 : cursor_pos - 1;
-  //   lcd.updateCursorPosition(cursor_pos);
-  // }
-  
   if(up.isPressed())
   {
     byte display_val = routingMatrix.changeRouting(cursor_pos, 
@@ -104,31 +97,16 @@ void loop()
   // was used to send test midi message. Currently unused
   if(down.isPressed())
   {
-    // all this code is for testing purposes only. 
-    // down button is being used as a midi trigger
-    // byte output_midi_channel;
-    // byte output_cc;
-    // routingMatrix.route(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
-    // midiSender.sendCC(output_midi_channel, output_cc, controller_value);
   }
 
   if(usbController.hasChanged())
   {
-    /*
-      When interacting with usb controller:
-      1. Read data from controller 
-      2. Lookup corresponding routing from routingMatrix
-      3. Update corresponding output value
-      4. Send data to midi out port
-    */
-
     usbController.readController(&input_midi_channel, &input_cc, &input_value);
     
-    routingMatrix.lookup(input_midi_channel, input_cc, &output_midi_channel, &output_cc);
+    routingMatrix.lookup(input_midi_channel, input_cc, 
+                         &output_midi_channel, &output_cc);
     
     midiSender.sendCC(output_midi_channel, output_cc, input_value);
-
-
   }
 
   // check if it's time to refresh the screen
@@ -165,11 +143,12 @@ void updateCursorPosition(byte* cursor_pos)
     break;
   
   case Constants::menu_entries::Output_channel:
-    lcd.setCursor(4, 8);
+    lcd.setCursor(8, 1);
     break;
 
   default:
     lcd.setCursor(0, 0);
+    lcd.print(*cursor_pos);
     break;
   }
 }

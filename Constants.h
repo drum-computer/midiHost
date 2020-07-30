@@ -8,7 +8,7 @@ namespace Constants
   const byte POT1_PIN =            A1;
   
   const byte LEFT_BUTTON_PIN =     A5;
-  const byte RIGHT_BUTTON_PIN =    A4;
+  const byte NEXT_BUTTON_PIN =     A4;
   const byte UP_BUTTON_PIN =       A3;
   const byte DOWN_BUTTON_PIN =     A2;
 
@@ -23,13 +23,13 @@ namespace Constants
   const byte NUM_CURSOR_POS =       2;
   const byte SCREEN_REFRESH_RATE = 100;
   
-  enum menu_entries {   Init,
-                        Input_channel,
-                        Input_cc,
-                        Input_value,
-                        Output_channel,
-                        Output_cc,
-                        Output_value};        
+  enum menu_entries { Output_channel,
+                      Output_cc,
+                      Init,
+                      Input_channel,
+                      Input_cc,
+                      Input_value,
+                      Output_value};        
 
   // midi and matrix settings
   const byte NUM_CHANNELS =         4;
