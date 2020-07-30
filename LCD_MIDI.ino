@@ -10,7 +10,7 @@
 Button up(Constants::UP_BUTTON_PIN);
 Button down(Constants::DOWN_BUTTON_PIN);
 Button left(Constants::LEFT_BUTTON_PIN);
-Button right(Constants::RIGHT_BUTTON_PIN);
+Button next(Constants::RIGHT_BUTTON_PIN);
 
 // object responsible for sending midi data through midi out port
 MidiSender midiSender;
@@ -66,13 +66,13 @@ void loop()
   static unsigned long last_screen_update = 0;
 
   // these variables are updated by usbController.readController()
-  static byte input_midi_channel;
-  static byte input_cc;
-  static byte input_value;
+  static byte input_midi_channel = 0;
+  static byte input_cc = 0;
+  static byte input_value = 0;
 
   // these variables are uodated by routingMatrix.lookup()
-  static byte output_midi_channel;
-  static byte output_cc;
+  static byte output_midi_channel = 0;
+  static byte output_cc = 0;
 
   // this variable is updated by cursor button left/right
   static byte cursor_pos = 0;
@@ -80,19 +80,19 @@ void loop()
   // main usb task 
   usbController.task();
   
-  if(right.isPressed())
+  if(next.isPressed())
   {
-    cursor_pos = (cursor_pos >= Constants::NUM_CURSOR_POS - 1) ? 0 
-                  : cursor_pos + 1;
-    lcd.updateCursorPosition(cursor_pos);
+    
+    // lcd.updateCursorPosition(cursor_pos);
+    updateCursorPosition(&cursor_pos);
   }
   
-  if(left.isPressed())
-  {
-    cursor_pos = (cursor_pos == 0) ? Constants::NUM_CURSOR_POS - 1 
-                  : cursor_pos - 1;
-    lcd.updateCursorPosition(cursor_pos);
-  }
+  // if(left.isPressed())
+  // {
+  //   cursor_pos = (cursor_pos == 0) ? Constants::NUM_CURSOR_POS - 1 
+  //                 : cursor_pos - 1;
+  //   lcd.updateCursorPosition(cursor_pos);
+  // }
   
   if(up.isPressed())
   {
@@ -152,4 +152,24 @@ void loop()
 
   // not sure if it's needed, just for stability  
   delay(1);
+}
+
+void updateCursorPosition(byte* cursor_pos)
+{ 
+  *cursor_pos = (*cursor_pos >= Constants::NUM_CURSOR_POS - 1) ? 0 
+                  : *cursor_pos + 1;
+  switch (*cursor_pos)
+  {
+  case Constants::menu_entries::Output_cc:
+    lcd.setCursor(4, 1);
+    break;
+  
+  case Constants::menu_entries::Output_channel:
+    lcd.setCursor(4, 8);
+    break;
+
+  default:
+    lcd.setCursor(0, 0);
+    break;
+  }
 }

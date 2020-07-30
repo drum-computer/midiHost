@@ -23,24 +23,13 @@ namespace Constants
   const byte NUM_CURSOR_POS =       2;
   const byte SCREEN_REFRESH_RATE = 100;
   
-  const byte menu_size;
   enum menu_entries {   Init,
                         Input_channel,
                         Input_cc,
                         Input_value,
                         Output_channel,
                         Output_cc,
-                        Output_value};
-
-  const byte cursor_position[7][2] = {{0, 0}, 
-                                      {4, 0},
-                                      {8, 0},
-                                      {12, 0}, 
-                                      {4, 1},
-                                      {8, 1},
-                                      {12, 1}};
-
-                        
+                        Output_value};        
 
   // midi and matrix settings
   const byte NUM_CHANNELS =         4;
