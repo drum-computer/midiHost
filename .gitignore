@@ -2,3 +2,4 @@ LCD_MIDI.arduino.avr.uno.elf
 LCD_MIDI.arduino.avr.uno.hex
 LCD_MIDI.arduino.avr.uno.with_bootloader.hex
 .vscode
+*.psd
