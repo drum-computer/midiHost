@@ -1,10 +1,10 @@
-#include "MidiSender.h"
-#include "Constants.h"
-#include "TestController.h"
-#include "Button.h"
-#include "LCD.h"
-#include "RoutingMatrix.h"
-#include "UsbController.h"
+#include "modules/MidiSender.h"
+#include "modules/Constants.h"
+#include "modules/TestController.h"
+#include "modules/Button.h"
+#include "modules/LCD.h"
+#include "modules/RoutingMatrix.h"
+#include "modules/UsbController.h"
 
 // interaction buttons
 Button up(Constants::UP_BUTTON_PIN);
