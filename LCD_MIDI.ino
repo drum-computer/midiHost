@@ -1,11 +1,10 @@
-#include "modules/MidiSender.h"
-#include "modules/Constants.h"
-#include "modules/TestController.h"
-#include "modules/Button.h"
-#include "modules/LCD.h"
-#include "modules/RoutingMatrix.h"
-#include "modules/UsbController.h"
-#include "modules/System.h"
+#include "src/MidiSender.h"
+#include "src/Constants.h"
+#include "src/Button.h"
+#include "src/LCD.h"
+#include "src/RoutingMatrix.h"
+#include "src/UsbController.h"
+#include "src/System.h"
 
 // interaction buttons
 Button up(Constants::UP_BUTTON_PIN);
@@ -20,9 +19,6 @@ MidiSender midiSender;
 LCD lcd(Constants::LCD_RS, Constants::LCD_E, 
         Constants::LCD_D4, Constants::LCD_D5,
         Constants::LCD_D6, Constants::LCD_D7);
-
-// test potentiometer used to emulate single pot of usb controller
-TestController testPot(Constants::POT1_PIN);
 
 // this object stores all the midi routings
 RoutingMatrix routingMatrix;

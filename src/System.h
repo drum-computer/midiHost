@@ -30,7 +30,6 @@ private:
   Constants::working_mode working_mode;
 
   Constants::menu_entries menu_entry;
-
 public:
   System(/* args */);
   ~System();
