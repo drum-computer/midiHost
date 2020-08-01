@@ -6,25 +6,13 @@
 class RoutingMatrix
 {
 private:
-  /* data */
+  int matrix[Constants::MATRIX_SIZE];  
 public:
-  int matrix[Constants::MATRIX_SIZE];
-  RoutingMatrix()
-  {
-    // init default routing matrix
-    for(int i = 0; i < Constants::MATRIX_SIZE; i++)
-      matrix[i] = i;
-  }
+  RoutingMatrix();
 
-  int getDestination(int address)
-  {
-    return matrix[address];
-  }
+  int RoutingMatrix::getDestination(int address);
 
-  void setDestination(int address, int value)
-  {
-    matrix[address] = value;
-  }
+  void RoutingMatrix::setDestination(int address, int value);
 
 };
 
