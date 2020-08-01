@@ -4,33 +4,16 @@
 
 class Button
 {
-  byte _buttonPin;
-  byte _lastState = 1;
 private:
-  /* data */
+  byte _buttonPin;
+  byte _lastState;
+
 public:
-  Button::Button(byte buttonPin)
-  {
-    _buttonPin = buttonPin;
-    pinMode(_buttonPin, INPUT);
-  }
+  Button::Button(byte buttonPin);
 
-  Button::~Button()
-  {
-  }
+  Button::~Button();
 
-  bool isPressed()
-  {
-    if (digitalRead(_buttonPin) == 0 && _lastState == 1)
-    {
-      _lastState = 0;
-      return true;
-    } else if (digitalRead(_buttonPin) == 1 && _lastState == 0)
-    {
-      _lastState = 1;
-    }
-    return false;
-  }
+  bool Button::isPressed();
 };
 
 #endif
