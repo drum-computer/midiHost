@@ -5,10 +5,8 @@
 
 #include "MidiSender.h"
 #include "Constants.h"
-#include "Button.h"
 #include "LCD.h"
 #include "RoutingMatrix.h"
-#include "UsbController.h"
 
 class System
 {
@@ -24,51 +22,17 @@ private:
   // this object stores all the midi routings
   RoutingMatrix routingMatrix;
 
-  // this object interfaces with usb controller
-  UsbController usbController;
-
   Constants::working_mode working_mode;
 
   Constants::menu_entries menu_entry;
 public:
   System(/* args */);
   ~System();
-  void Init();
+  void System::Init();
+  void System::updateCursorPosition(byte* cursor_pos);
+  void System::increaseValue(byte input_midi_channel, byte input_cc, byte cursor_pos);
+  void System::decreaseValue(byte input_midi_channel, byte input_cc, byte cursor_pos);
+  void System::send(byte input_midi_channel, byte input_cc, byte input_value);
 };
-
-System::System (/* args */)
-{
-
-}
-
-System::~System()
-{
-}
-
-void System::Init()
-{
-    // start midi sender
-  midiSender.start();
-  
-  // start usb controller
-  usbController.start();
-
-  // start lcd display 16 chars 2 line mode
-  lcd.begin(16, 2);
-
-  // init working mode
-  working_mode = Constants::working_mode::edit;
-
-  // print some initial data
-  lcd.setCursor(0, 0);
-  lcd.print(F("->ch01cc000v000"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("<-ch01cc000v000"));
-  
-  //enable blinking cursor
-  lcd.cursor();
-  lcd.blink();
-
-}
 
 #endif
