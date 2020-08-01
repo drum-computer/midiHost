@@ -7,8 +7,8 @@ namespace Constants
   // arduino pins
   const byte POT1_PIN =            A1;
   
-  const byte LEFT_BUTTON_PIN =     A5;
-  const byte NEXT_BUTTON_PIN =     A4;
+  const byte MODE_BUTTON_PIN =     A5;
+  const byte SELECT_BUTTON_PIN =     A4;
   const byte UP_BUTTON_PIN =       A3;
   const byte DOWN_BUTTON_PIN =     A2;
 
@@ -37,7 +37,8 @@ namespace Constants
   const int MATRIX_SIZE = NUM_CHANNELS * NUM_CONTROLLERS;
 
   // working mode
-  enum working_mode {monitor, edit};
+  const byte NUM_MODES;
+  enum working_mode {monitor, edit, save, reset};
 }
 
 #endif

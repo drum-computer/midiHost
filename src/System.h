@@ -28,7 +28,8 @@ private:
 public:
   System(/* args */);
   ~System();
-  void System::Init();
+  void System::init();
+  void System::nextMode(byte* current_mode);
   void System::updateCursorPosition(byte* cursor_pos);
   void System::increaseValue(byte input_midi_channel, byte input_cc, byte cursor_pos);
   void System::decreaseValue(byte input_midi_channel, byte input_cc, byte cursor_pos);

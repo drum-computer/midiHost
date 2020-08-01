@@ -4,30 +4,35 @@
 #include "src/System.h"
 
 // interaction buttons
+Button mode(Constants::MODE_BUTTON_PIN);
+Button select(Constants::SELECT_BUTTON_PIN);
 Button up(Constants::UP_BUTTON_PIN);
 Button down(Constants::DOWN_BUTTON_PIN);
-Button left(Constants::LEFT_BUTTON_PIN);
-Button next(Constants::NEXT_BUTTON_PIN);
 
+// korg nano kontrol
 UsbController usbController;
 
+// all project-specific code is in here
+System pSystem;
+
+// current state (monitor/edit/save/reset)
 Constants::working_mode working_mode;
 
-Constants::menu_entries menu_entry;
-
+// screen refresh timer
 unsigned long time;
-
-System pSystem;
 
 void setup()
 {
-  pSystem.Init();
-    // start usb controller
+  // init system
+  pSystem.init();
+
+  // start usb controller
   usbController.start();
 }
 
 void loop()
 {
+  //keep track of elapsed time for screen refresh
   time = millis();
   static unsigned long last_screen_update = 0;
 
@@ -36,17 +41,21 @@ void loop()
   static byte input_cc = 0;
   static byte input_value = 0;
 
-  // these variables are uodated by routingMatrix.lookup()
-  static byte output_midi_channel = 0;
-  static byte output_cc = 0;
-
   // this variable is updated by next button
   static byte cursor_pos = 0;
+
+  // mode counter
+  static byte current_mode = 0; // monitor
 
   // main usb task 
   usbController.task();
   
-  if(next.isPressed())
+  if(mode.isPressed())
+  {
+    pSystem.nextMode(&current_mode); //mode cycle
+  }
+  
+  if(select.isPressed())
   {
     pSystem.updateCursorPosition(&cursor_pos);
   }
@@ -65,7 +74,6 @@ void loop()
   {
     usbController.readController(&input_midi_channel, &input_cc, &input_value);
     pSystem.send(input_midi_channel, input_cc, input_value);   
-    
   }
 
   // check if it's time to refresh the screen

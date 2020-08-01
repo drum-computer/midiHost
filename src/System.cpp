@@ -13,13 +13,11 @@ System::~System()
 {
 }
 
-void System::Init()
+void System::init()
 {
-    // start midi sender
+  // start midi sender
   midiSender.start();
   
-
-
   // start lcd display 16 chars 2 line mode
   lcd.begin(16, 2);
 
@@ -35,6 +33,11 @@ void System::Init()
   //enable blinking cursor
   lcd.cursor();
   lcd.blink();
+}
+
+void System::nextMode(byte* current_mode)
+{
+  *current_mode = (*current_mode + 1) > (Constants::NUM_MODES - 1) ? 0 : *current_mode + 1;
 }
 
 void System::updateCursorPosition(byte* cursor_pos)
