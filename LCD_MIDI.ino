@@ -5,6 +5,7 @@
 #include "modules/LCD.h"
 #include "modules/RoutingMatrix.h"
 #include "modules/UsbController.h"
+#include "modules/System.h"
 
 // interaction buttons
 Button up(Constants::UP_BUTTON_PIN);
