@@ -1,7 +1,9 @@
 #include "src/Constants.h"
 #include "src/Button.h"
 #include "src/UsbController.h"
-#include "src/System.h"
+#include "src/MidiSender.h"
+#include "src/LCD.h"
+#include "src/RoutingMatrix.h"
 
 // interaction buttons
 Button mode(Constants::MODE_BUTTON_PIN);
@@ -12,29 +14,23 @@ Button down(Constants::DOWN_BUTTON_PIN);
 // korg nano kontrol
 UsbController usbController;
 
-// all project-specific code is in here
-System pSystem;
+MidiSender midiSender;
+
+// object that controls LCD display (wraps built-in liquid crystal library)
+LCD lcd(Constants::LCD_RS, Constants::LCD_E, 
+        Constants::LCD_D4, Constants::LCD_D5,
+        Constants::LCD_D6, Constants::LCD_D7);
+
+// this object stores all the midi routings
+RoutingMatrix routingMatrix;
+
+Constants::menu_entries menu_entry;
 
 // current state (monitor/edit/save/reset)
 Constants::working_mode working_mode;
 
 // screen refresh timer
 unsigned long time;
-
-void setup()
-{
-  // init system
-  pSystem.init();
-
-  // start usb controller
-  usbController.start();
-}
-
-void loop()
-{
-  //keep track of elapsed time for screen refresh
-  time = millis();
-  static unsigned long last_screen_update = 0;
 
   // these variables are updated by usbController.readController()
   static byte input_midi_channel = 0;
@@ -47,33 +43,66 @@ void loop()
   // mode counter
   static byte current_mode = 0; // monitor
 
+void setup()
+{
+  midiSender.start();
+  
+  // start lcd display 16 chars 2 line mode
+  lcd.begin(16, 2);
+
+  // init working mode
+  working_mode = Constants::working_mode::edit;
+
+  // print some initial data
+  lcd.setCursor(0, 0);
+  lcd.print(F("->ch01cc000v000"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("<-ch01cc000v000"));
+  
+  //enable blinking cursor
+  lcd.cursor();
+  lcd.blink();
+
+
+  // start usb controller
+  usbController.start();
+}
+
+void loop()
+{
+  //keep track of elapsed time for screen refresh
+  time = millis();
+  static unsigned long last_screen_update = 0;
+
+
+
   // main usb task 
   usbController.task();
   
   if(mode.isPressed())
   {
-    pSystem.nextMode(&current_mode); //mode cycle
+    switchMode(); //mode cycle
   }
   
   if(select.isPressed())
   {
-    pSystem.updateCursorPosition(&cursor_pos);
+    updateCursorPosition();
   }
   
   if(up.isPressed())
   {
-    pSystem.increaseValue(input_midi_channel, input_cc, cursor_pos); 
+    increaseSelectedValue(); 
   }
 
   if(down.isPressed())
   {
-    pSystem.decreaseValue(input_midi_channel, input_cc, cursor_pos); 
+    decreaseSelectedValue(); 
   }
   
   if(usbController.hasChanged())
   {
-    usbController.readController(&input_midi_channel, &input_cc, &input_value);
-    pSystem.send(input_midi_channel, input_cc, input_value);   
+    // usbController.readController(&Dispatcher::input_midi_channel, &Dispatcher::input_cc, &Dispatcher::input_value);
+    send();   
   }
 
   // check if it's time to refresh the screen
@@ -81,16 +110,8 @@ void loop()
   if((time - last_screen_update) > Constants::SCREEN_REFRESH_RATE
                             && working_mode == Constants::working_mode::monitor)
   {
-    // add 1 because we used to 1 to 16 midi channel enumeration
-    // lcd.updateDisplayValue(3, input_midi_channel + 1); 
-    // lcd.updateDisplayValue(4, input_cc);
-    // lcd.updateDisplayValue(5, input_value);
-    
-    // // add 1 because we used to 1 to 16 midi channel enumeration
-    // lcd.updateDisplayValue(0, output_midi_channel + 1);
-    // lcd.updateDisplayValue(1, output_cc);
-    // lcd.updateDisplayValue(2, input_value);
 
+    // dispatcher.refreshScreen();
     // // reset the timer
     // last_screen_update = time;
   }
@@ -100,3 +121,135 @@ void loop()
 }
 
 
+void switchMode()
+{
+  current_mode = (current_mode + 1) > (Constants::NUM_MODES - 1) ? 0 : current_mode + 1;
+}
+
+void updateCursorPosition()
+{ 
+  cursor_pos = (cursor_pos >= Constants::NUM_CURSOR_POS - 1) ? 
+                                            0 : cursor_pos + 1;
+  switch (cursor_pos)
+  {
+  case Constants::menu_entries::Output_channel:
+    lcd.setCursor(4, 1);
+    break;
+  
+  case Constants::menu_entries::Output_cc:
+    lcd.setCursor(8, 1);
+    break;
+
+  default:
+    lcd.setCursor(0, 0);
+    lcd.print(cursor_pos);
+    break;
+  }
+}
+void increaseSelectedValue()
+{
+  int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
+                                                                  + input_cc;
+  int old_value = routingMatrix.getDestination(lookup_address);
+  int new_value;
+  //fjgure what needs to be changed
+  //change it 
+  //update display value
+  switch (cursor_pos)
+  {
+  case Constants::menu_entries::Output_channel:
+    new_value = 
+          (old_value + Constants::NUM_CONTROLLERS) >= Constants::MATRIX_SIZE 
+                                    ? old_value % Constants::NUM_CONTROLLERS
+                                    : old_value + Constants::NUM_CONTROLLERS;
+    
+    // put it back
+    routingMatrix.setDestination(lookup_address, new_value);
+
+    // update screen
+    lcd.updateDisplayValue(0, (new_value / Constants::NUM_CONTROLLERS) + 1);
+    break;
+
+  case Constants::menu_entries::Output_cc:
+    byte channel_offset = old_value / Constants::NUM_CONTROLLERS;
+    new_value = 
+          (old_value + 1) >= ((Constants::NUM_CONTROLLERS * channel_offset) 
+            + Constants::NUM_CONTROLLERS) ? 
+              (Constants::NUM_CONTROLLERS * channel_offset) : (old_value + 1);
+
+    // put it back
+    routingMatrix.setDestination(lookup_address, new_value);
+
+    // update screen
+    lcd.updateDisplayValue(1, new_value % Constants::NUM_CONTROLLERS);
+    break;
+  }
+}
+
+void decreaseSelectedValue()
+{
+  int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
+                                                                  + input_cc;
+  int old_value = routingMatrix.getDestination(lookup_address);
+  int new_value;
+  //fjgure what needs to be changed
+  //change it 
+  //update display value
+  switch (cursor_pos)
+  {
+  case Constants::menu_entries::Output_channel:
+    new_value = (old_value - Constants::NUM_CONTROLLERS) < 0 ? 
+              Constants::MATRIX_SIZE - Constants::NUM_CONTROLLERS + old_value: 
+                                      old_value - Constants::NUM_CONTROLLERS;
+    
+    // put it back
+    routingMatrix.setDestination(lookup_address, new_value);
+
+    // update screen
+    lcd.updateDisplayValue(0, (new_value / Constants::NUM_CONTROLLERS) + 1);
+    break;
+
+  case Constants::menu_entries::Output_cc:
+    byte channel_offset = old_value / Constants::NUM_CONTROLLERS;
+    new_value = 
+          (old_value - 1) < (Constants::NUM_CONTROLLERS * channel_offset) ? 
+                  ((Constants::NUM_CONTROLLERS * (channel_offset + 1)) - 1) : 
+                                                              (old_value - 1);
+
+    // put it back
+    routingMatrix.setDestination(lookup_address, new_value);
+
+    // update screen
+    lcd.updateDisplayValue(1, new_value % Constants::NUM_CONTROLLERS);
+    break;
+  }
+}
+
+void refreshScreen()
+{
+  // //add 1 because we used to 1 to 16 midi channel enumeration
+  // lcd.updateDisplayValue(3, input_midi_channel + 1); 
+  // lcd.updateDisplayValue(4, input_cc);
+  // lcd.updateDisplayValue(5, input_value);
+  
+  // // add 1 because we used to 1 to 16 midi channel enumeration
+  // lcd.updateDisplayValue(0, output_midi_channel + 1);
+  // lcd.updateDisplayValue(1, output_cc);
+  // lcd.updateDisplayValue(2, input_value);
+}
+
+
+void send()
+{
+  int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
+                                                                      + input_cc;
+      
+  byte output_midi_channel = routingMatrix.getDestination(lookup_address) / 
+                                                  Constants::NUM_CONTROLLERS;
+
+  byte output_cc = routingMatrix.getDestination(lookup_address) %
+                                                  Constants::NUM_CONTROLLERS;
+  
+  midiSender.sendCC(output_midi_channel, output_cc, input_value);
+
+}
