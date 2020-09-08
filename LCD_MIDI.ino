@@ -4,7 +4,7 @@
 #include "src/MidiSender.h"
 #include "src/LCD.h"
 #include "src/RoutingMatrix.h"
-
+#pragma region //objects and variables initialization 
 // interaction buttons
 Button mode(Constants::MODE_BUTTON_PIN);
 Button select(Constants::SELECT_BUTTON_PIN);
@@ -14,9 +14,10 @@ Button down(Constants::DOWN_BUTTON_PIN);
 // korg nano kontrol
 UsbController usbController;
 
+// midi out
 MidiSender midiSender;
 
-// object that controls LCD display (wraps built-in liquid crystal library)
+// LCD display (wraps built-in liquid crystal library)
 LCD lcd(Constants::LCD_RS, Constants::LCD_E, 
         Constants::LCD_D4, Constants::LCD_D5,
         Constants::LCD_D6, Constants::LCD_D7);
@@ -28,27 +29,27 @@ Constants::menu_entries menu_entry;
 
 // current state (monitor/edit/save/reset)
 Constants::working_mode working_mode;
-
 // screen refresh timer
 unsigned long time;
 
   // these variables are updated by usbController.readController()
-  static byte input_midi_channel = 0;
-  static byte input_cc = 0;
-  static byte input_value = 0;
+static byte input_midi_channel = 0;
+static byte input_cc = 0;
+static byte input_value = 0;
 
-  // this variable is updated by next button
-  static byte cursor_pos = 0;
+// this variable is updated by next button
+static byte cursor_pos = 0;
 
-  // mode counter
-  static byte current_mode = 0; // monitor
+// mode counter
+static byte current_mode = 0; // monitor
+#pragma endregion
 
 void setup()
 {
   midiSender.start();
   
   // start lcd display 16 chars 2 line mode
-  lcd.begin(16, 2);
+  lcd.begin(20, 4);
 
   // init working mode
   working_mode = Constants::working_mode::edit;
@@ -73,8 +74,6 @@ void loop()
   //keep track of elapsed time for screen refresh
   time = millis();
   static unsigned long last_screen_update = 0;
-
-
 
   // main usb task 
   usbController.task();
@@ -101,8 +100,8 @@ void loop()
   
   if(usbController.hasChanged())
   {
-    // usbController.readController(&Dispatcher::input_midi_channel, &Dispatcher::input_cc, &Dispatcher::input_value);
-    send();   
+    usbController.readController(&input_midi_channel, &input_cc, &input_value);
+    sendMidiCC();   
   }
 
   // check if it's time to refresh the screen
@@ -123,13 +122,12 @@ void loop()
 
 void switchMode()
 {
-  current_mode = (current_mode + 1) > (Constants::NUM_MODES - 1) ? 0 : current_mode + 1;
+  current_mode = (current_mode + 1) % Constants::NUM_MODES;
 }
 
 void updateCursorPosition()
 { 
-  cursor_pos = (cursor_pos >= Constants::NUM_CURSOR_POS - 1) ? 
-                                            0 : cursor_pos + 1;
+  cursor_pos = (cursor_pos + 1) % Constants::NUM_CURSOR_POS;
   switch (cursor_pos)
   {
   case Constants::menu_entries::Output_channel:
@@ -239,7 +237,7 @@ void refreshScreen()
 }
 
 
-void send()
+void sendMidiCC()
 {
   int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
                                                                       + input_cc;

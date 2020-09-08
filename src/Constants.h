@@ -5,14 +5,12 @@
 namespace Constants
 {
   // arduino pins
-  const byte POT1_PIN =            A1;
-  
   const byte MODE_BUTTON_PIN =     A5;
   const byte SELECT_BUTTON_PIN =   A4;
   const byte UP_BUTTON_PIN =       A3;
   const byte DOWN_BUTTON_PIN =     A2;
 
-  const byte LCD_RS =              A0;
+  const byte LCD_RS =               7;
   const byte LCD_E =                6;
   const byte LCD_D4 =               5;
   const byte LCD_D5 =               4;
