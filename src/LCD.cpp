@@ -2,6 +2,22 @@
 #include "LiquidCrystal.h"
 #include "LCD.h"
 
+void LCD::start()
+{
+  // start lcd display 20 chars 4 line mode
+  LiquidCrystal::begin(20, 4);
+  // print some initial data
+  LiquidCrystal::setCursor(0, 0);
+  LiquidCrystal::print(F("mode: perform"));
+  LiquidCrystal::setCursor(0, 2);
+  LiquidCrystal::print(F("-> ch01 cc000 val000"));
+  LiquidCrystal::setCursor(0, 3);
+  LiquidCrystal::print(F("<- ch01 cc000 val000"));
+  
+  //enable blinking cursor
+  LiquidCrystal::cursor();
+  LiquidCrystal::blink();
+}
 
 void LCD::printLeadingZeroes(int val, byte max_digits)
 {

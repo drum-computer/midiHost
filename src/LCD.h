@@ -6,7 +6,7 @@
 class LCD : public LiquidCrystal
 {
 private:
-
+  
   void LCD::printLeadingZeroes(int val, byte max_digits);
 
 public:
@@ -17,6 +17,8 @@ public:
   void LCD::updateCursorPosition(byte cursor_position);
 
   void LCD::updateDisplayValue(byte cursor_position, byte display_val);
+
+  void LCD::start();
 };
 
 

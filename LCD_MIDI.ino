@@ -48,21 +48,11 @@ void setup()
 {
   midiSender.start();
   
-  // start lcd display 16 chars 2 line mode
-  lcd.begin(20, 4);
-
+  lcd.start();
   // init working mode
   working_mode = Constants::working_mode::edit;
 
-  // print some initial data
-  lcd.setCursor(0, 0);
-  lcd.print(F("->ch01cc000v000"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("<-ch01cc000v000"));
   
-  //enable blinking cursor
-  lcd.cursor();
-  lcd.blink();
 
 
   // start usb controller
