@@ -47,16 +47,10 @@ static byte current_mode = 0; // monitor
 void setup()
 {
   midiSender.start();
-  
   lcd.start();
-  // init working mode
-  working_mode = Constants::working_mode::edit;
-
-  
-
-
-  // start usb controller
   usbController.start();
+
+  working_mode = Constants::working_mode::edit;
 }
 
 void loop()
@@ -70,7 +64,8 @@ void loop()
   
   if(mode.isPressed())
   {
-    switchMode(); //mode cycle
+    current_mode = (current_mode + 1) % Constants::NUM_MODES;
+    lcd.switchMode(current_mode); //mode cycle
   }
   
   if(select.isPressed())
@@ -97,7 +92,7 @@ void loop()
   // check if it's time to refresh the screen
   // in the future this will be main lcd loop for everything screen-related
   if((time - last_screen_update) > Constants::SCREEN_REFRESH_RATE
-                            && working_mode == Constants::working_mode::monitor)
+                            && working_mode == Constants::working_mode::perform)
   {
 
     // dispatcher.refreshScreen();

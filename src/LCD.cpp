@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "LiquidCrystal.h"
 #include "LCD.h"
+#include "Constants.h"
 
 void LCD::start()
 {
@@ -81,6 +82,57 @@ void LCD::updateDisplayValue(byte cursor_position, byte display_val)
   case 2: case 5: // means we are changing test pot val
     printLeadingZeroes(display_val, 3);
     LiquidCrystal::print(display_val);
+    break;
+  }
+}
+
+void LCD::switchMode(byte mode)
+{
+  printModeText(mode);
+}
+
+void LCD::printModeText(byte mode)
+{
+  LiquidCrystal::clear();
+  switch (mode)
+  {
+  case 0:
+    LiquidCrystal::setCursor(0, 0);
+    LiquidCrystal::print(F("mode: perform"));
+    LiquidCrystal::setCursor(0, 2);
+    LiquidCrystal::print(F("-> ch01 cc000 val000"));
+    LiquidCrystal::setCursor(0, 3);
+    LiquidCrystal::print(F("<- ch01 cc000 val000"));
+    break;
+  
+  case 1:
+    LiquidCrystal::setCursor(0, 0);
+    LiquidCrystal::print(F("mode: edit"));
+    LiquidCrystal::setCursor(0, 2);
+    LiquidCrystal::print(F("usb -> ch01 cc000"));
+    LiquidCrystal::setCursor(0, 3);
+    LiquidCrystal::print(F("midi <- ch01 cc000"));
+    break;
+
+  case 2:
+    LiquidCrystal::setCursor(0, 0);
+    LiquidCrystal::print(F("mode: save"));
+    LiquidCrystal::setCursor(0, 2);
+    LiquidCrystal::print(F("press UP to save"));
+    LiquidCrystal::setCursor(0, 3);
+    LiquidCrystal::print(F("current state"));
+    break;
+  
+  case 3:
+    LiquidCrystal::setCursor(0, 0);
+    LiquidCrystal::print(F("mode: reset"));
+    LiquidCrystal::setCursor(0, 2);
+    LiquidCrystal::print(F("press UP to reset"));
+    LiquidCrystal::setCursor(0, 3);
+    LiquidCrystal::print(F("to default state"));
+    break;
+
+  default:
     break;
   }
 }

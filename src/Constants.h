@@ -35,8 +35,8 @@ namespace Constants
   const int MATRIX_SIZE = NUM_CHANNELS * NUM_CONTROLLERS;
 
   // working mode
-  const byte NUM_MODES;
-  enum working_mode {monitor, edit, save, reset};
+  const byte NUM_MODES = 4;
+  enum working_mode {perform, edit, save, reset};
 }
 
 #endif
