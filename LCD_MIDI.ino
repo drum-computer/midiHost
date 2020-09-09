@@ -32,7 +32,7 @@ Constants::working_mode working_mode;
 // screen refresh timer
 unsigned long time;
 
-  // these variables are updated by usbController.readController()
+// these variables are updated by usbController.readController()
 static byte input_midi_channel = 0;
 static byte input_cc = 0;
 static byte input_value = 0;
