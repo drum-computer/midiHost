@@ -12,7 +12,7 @@ namespace Constants
   const byte UP_BUTTON_PIN =       A3;
   const byte DOWN_BUTTON_PIN =     A2;
 
-  const byte LCD_RS =              A0;
+  const byte LCD_RS =               7;
   const byte LCD_E =                6;
   const byte LCD_D4 =               5;
   const byte LCD_D5 =               4;

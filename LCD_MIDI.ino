@@ -44,7 +44,7 @@ void setup()
   usbController.start();
 
   // start lcd display 16 chars 2 line mode
-  lcd.begin(16, 2);
+  lcd.begin(20, 4);
 
   // init working mode
   working_mode = Constants::working_mode::edit;
@@ -53,6 +53,10 @@ void setup()
   lcd.setCursor(0, 0);
   lcd.print(F("->ch01cc000v000"));
   lcd.setCursor(0, 1);
+  lcd.print(F("<-ch01cc000v000"));
+   lcd.setCursor(0, 2);
+  lcd.print(F("<-ch01cc000v000"));
+   lcd.setCursor(0, 3);
   lcd.print(F("<-ch01cc000v000"));
   
   //enable blinking cursor
