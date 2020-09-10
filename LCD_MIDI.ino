@@ -70,7 +70,7 @@ void loop()
   
   if(select.isPressed())
   {
-    updateCursorPosition();
+    lcd.cycleCursorPosition();
   }
   
   if(up.isPressed())

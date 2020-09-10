@@ -1,7 +1,6 @@
 #include "Arduino.h"
 #include "LiquidCrystal.h"
 #include "LCD.h"
-#include "Constants.h"
 
 void LCD::start()
 {
@@ -40,34 +39,14 @@ void LCD::printLeadingZeroes(int val, byte max_digits)
     }
 }
 
-void LCD::updateCursorPosition(byte cursor_position)
+void LCD::cycleCursorPosition(byte *available_positions)
 {
-  switch (cursor_position)
-  {
-  case 0:
-    LiquidCrystal::setCursor(4, 1);
-    break;
-  case 1:
-    LiquidCrystal::setCursor(8, 1);
-    break;
-  case 2: 
-    LiquidCrystal::setCursor(12, 1);
-    break;
-  case 3: 
-    LiquidCrystal::setCursor(4, 0);
-    break;
-  case 4: 
-    LiquidCrystal::setCursor(8, 0);
-    break;
-  case 5: 
-    LiquidCrystal::setCursor(12, 0);
-    break;
-  }
+
 }
 
 void LCD::updateDisplayValue(byte cursor_position, byte display_val)
 {
-  updateCursorPosition(cursor_position);
+  cycleCursorPosition();
   
   switch (cursor_position)
   {
@@ -88,7 +67,10 @@ void LCD::updateDisplayValue(byte cursor_position, byte display_val)
 
 void LCD::switchMode(byte mode)
 {
+  // change global mode
+  work_mode = mode;
   printModeText(mode);
+  // init cursor position for selected mode
 }
 
 void LCD::printModeText(byte mode)
