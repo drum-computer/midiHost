@@ -19,7 +19,8 @@ void RoutingMatrix::setDestination(int address, int value)
   matrix[address] = value;
 }
 
-void RoutingMatrix::increaseChannel(byte *input_midi_channel, byte *input_cc)
+
+byte RoutingMatrix::increaseChannel(byte *input_midi_channel, byte *input_cc)
 {
   int lookup_address = (*input_midi_channel * Constants::NUM_CONTROLLERS) 
                                                                     + *input_cc;
@@ -33,6 +34,24 @@ void RoutingMatrix::increaseChannel(byte *input_midi_channel, byte *input_cc)
   // put it back
   setDestination(lookup_address, new_value);
 
+  // return display value
+  return (new_value / Constants::NUM_CONTROLLERS) + 1;
+}
+
+
+byte RoutingMatrix::decreaseChannel(byte *input_midi_channel, byte *input_cc)
+{
+  int lookup_address = (*input_midi_channel * Constants::NUM_CONTROLLERS) 
+                                                                    + *input_cc;
+  int old_value = getDestination(lookup_address);
+  int new_value;
+  new_value = (old_value - Constants::NUM_CONTROLLERS) < 0 ? 
+              Constants::MATRIX_SIZE - Constants::NUM_CONTROLLERS + old_value: 
+                                      old_value - Constants::NUM_CONTROLLERS;
+    
+  // put it back
+  setDestination(lookup_address, new_value);
+
   // update screen
-  // lcd.updateDisplayValue(0, (new_value / Constants::NUM_CONTROLLERS) + 1);
+  return (new_value / Constants::NUM_CONTROLLERS) + 1;
 }

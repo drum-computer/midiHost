@@ -52,21 +52,25 @@ void LCD::updateDisplayValue(byte cursor_position, byte display_val)
 {
   // cycleCursorPosition();
   
-  // switch (cursor_position)
-  // {
-  // case 0: case 3: // means we are changing channel number
-  //   printLeadingZeroes(display_val, 2);
-  //   LiquidCrystal::print(display_val);
-  //   break;
-  // case 1: case 4: // means we are changing cc number
-  //   printLeadingZeroes(display_val, 3);
-  //   LiquidCrystal::print(display_val);
-  //   break;
-  // case 2: case 5: // means we are changing test pot val
-  //   printLeadingZeroes(display_val, 3);
-  //   LiquidCrystal::print(display_val);
-  //   break;
-  // }
+  switch (cursor_position)
+  {
+  case 0: case 3: // means we are changing channel number
+    printLeadingZeroes(display_val, 2);
+    LiquidCrystal::print(display_val);
+    break;
+  case 1: case 4: // means we are changing cc number
+    printLeadingZeroes(display_val, 3);
+    LiquidCrystal::print(display_val);
+    break;
+  case 2: case 5: // means we are changing test pot val
+    printLeadingZeroes(display_val, 3);
+    LiquidCrystal::print(display_val);
+    break;
+  }
+  // return cursor back to origin
+  LiquidCrystal::setCursor
+                    (Constants::CURSOR_POSITIONS[work_mode][cursor_position][0], 
+                    Constants::CURSOR_POSITIONS[work_mode][cursor_position][1]);
 }
 
 void LCD::switchMode(byte mode)

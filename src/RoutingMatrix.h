@@ -14,7 +14,9 @@ public:
 
   void RoutingMatrix::setDestination(int address, int value);
   
-  void RoutingMatrix::increaseChannel(byte *input_midi_channel, byte *input_cc);
+  byte RoutingMatrix::increaseChannel(byte *input_midi_channel, byte *input_cc);
+
+  byte RoutingMatrix::decreaseChannel(byte *input_midi_channel, byte *input_cc);
 };
 
 

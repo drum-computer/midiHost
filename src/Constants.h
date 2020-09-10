@@ -26,7 +26,7 @@ namespace Constants
   const byte SCREEN_REFRESH_RATE = 100;     
   const byte CURSOR_POSITIONS[4][2][2]{
                                   {{0, 0}, {0, 0}}, 
-                                  {{11, 3}, {17, 3}}, 
+                                  {{10, 3}, {16, 3}}, 
                                   {{6, 2}, {6, 2}},
                                   {{6, 2}, {6, 2}}};
   

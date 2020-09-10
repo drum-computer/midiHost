@@ -76,7 +76,11 @@ void loop()
       // lcd return cursor position
       byte cursor_position = lcd.getCursorPosition();
       if(cursor_position == 0)
-        routingMatrix.increaseChannel(&input_midi_channel, &input_cc);
+      {
+        byte display_val = 
+                  routingMatrix.increaseChannel(&input_midi_channel, &input_cc);
+        lcd.updateDisplayValue(cursor_position, display_val);
+      }
       // matrix change routing
       // lcd update current value
       break;
@@ -109,8 +113,13 @@ void loop()
       break;
     
     case 1: // edit
-      // matrix change routing
-      // lcd update current value
+      byte cursor_position = lcd.getCursorPosition();
+      if(cursor_position == 0)
+      {
+        byte display_val = 
+                  routingMatrix.decreaseChannel(&input_midi_channel, &input_cc);
+        lcd.updateDisplayValue(cursor_position, display_val);
+      }
       break;
 
     case 2: // save
