@@ -85,7 +85,7 @@ void LCD::printModeText(byte mode)
   LiquidCrystal::clear();
   switch (mode)
   {
-  case 0:
+  case Constants::WORK_MODES::PERFORM:
     LiquidCrystal::setCursor(0, 0);
     LiquidCrystal::print(F("mode: perform"));
     LiquidCrystal::setCursor(0, 2);
@@ -94,7 +94,7 @@ void LCD::printModeText(byte mode)
     LiquidCrystal::print(F("<- ch01 cc000 val000"));
     break;
   
-  case 1:
+  case Constants::WORK_MODES::EDIT:
     LiquidCrystal::setCursor(0, 0);
     LiquidCrystal::print(F("mode: edit"));
     LiquidCrystal::setCursor(0, 2);
@@ -103,7 +103,7 @@ void LCD::printModeText(byte mode)
     LiquidCrystal::print(F("midi <- ch01 cc000"));
     break;
 
-  case 2:
+  case Constants::WORK_MODES::SAVE:
     LiquidCrystal::setCursor(0, 0);
     LiquidCrystal::print(F("mode: save"));
     LiquidCrystal::setCursor(0, 2);
@@ -112,7 +112,7 @@ void LCD::printModeText(byte mode)
     LiquidCrystal::print(F("current state"));
     break;
   
-  case 3:
+  case Constants::WORK_MODES::RESET:
     LiquidCrystal::setCursor(0, 0);
     LiquidCrystal::print(F("mode: reset"));
     LiquidCrystal::setCursor(0, 2);

@@ -68,11 +68,11 @@ void loop()
   {
     switch (work_mode)
     {
-    case 0: // perform
+    case Constants::WORK_MODES::PERFORM:
       // do nothing
       break;
     
-    case 1: // edit
+    case Constants::WORK_MODES::EDIT:
       // lcd return cursor position
       byte cursor_position = lcd.getCursorPosition();
       if(cursor_position == 0)
@@ -85,17 +85,17 @@ void loop()
       // lcd update current value
       break;
 
-    case 2: // save
+    case Constants::WORK_MODES::SAVE:
       // memory save state
       // display show success
       break;
 
-    case 3: // reset
+    case Constants::WORK_MODES::RESET:
       // display confirmation
       // set working mode to 4 (reset confirmation screen)
       break;
     
-    case 4: // confirm factory reset
+    case Constants::WORK_MODES::CONFIRM_RESET:
       // matrix init
       // save init matrix to mem
       // display show success
@@ -108,11 +108,11 @@ void loop()
   {
     switch (work_mode)
     {
-    case 0: // perform
+    case Constants::WORK_MODES::PERFORM:
       // do nothing
       break;
     
-    case 1: // edit
+    case Constants::WORK_MODES::EDIT:
       byte cursor_position = lcd.getCursorPosition();
       if(cursor_position == 0)
       {
@@ -122,15 +122,15 @@ void loop()
       }
       break;
 
-    case 2: // save
+    case Constants::WORK_MODES::SAVE:
       // do nothing
       break;
 
-    case 3: // reset
+    case Constants::WORK_MODES::RESET:
       // do nothing
       break;
     
-    case 4: // confirm factory reset
+    case Constants::WORK_MODES::CONFIRM_RESET:
       // do nothing
       break;
     } 

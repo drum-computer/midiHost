@@ -34,6 +34,8 @@ namespace Constants
   const byte NUM_CURSOR_POS[4]{2, 2, 2, 2};
   // working mode
   const byte NUM_WORKING_MODES = 4;
+
+  enum WORK_MODES{PERFORM, EDIT, SAVE, RESET, CONFIRM_RESET};
 }
 
 #endif
