@@ -17,26 +17,23 @@ namespace Constants
   const byte LCD_D6 =               3;
   const byte LCD_D7 =               2;
 
-  // display number of possible positions for the display cursor 
-  const byte NUM_CURSOR_POS =       2;
-  const byte SCREEN_REFRESH_RATE = 100;
-  
-  enum menu_entries { Output_channel,
-                      Output_cc,
-                      Init,
-                      Input_channel,
-                      Input_cc,
-                      Input_value,
-                      Output_value};        
-
   // midi and matrix settings
   const byte NUM_CHANNELS =         4;
   const byte NUM_CONTROLLERS =    128;
   const int MATRIX_SIZE = NUM_CHANNELS * NUM_CONTROLLERS;
-
+ 
+  // display number of possible positions for the display cursor 
+  const byte SCREEN_REFRESH_RATE = 100;     
+  const byte CURSOR_POSITIONS[4][2][2]{
+                                  {{0, 0}, {0, 0}}, 
+                                  {{11, 3}, {17, 3}}, 
+                                  {{6, 2}, {6, 2}},
+                                  {{6, 2}, {6, 2}}};
+  
+  // number of available cursor pos for each work mode (basically array lengths)
+  const byte NUM_CURSOR_POS[4]{2, 2, 2, 2};
   // working mode
-  const byte NUM_MODES = 4;
-  enum working_mode {perform, edit, save, reset};
+  const byte NUM_WORKING_MODES = 4;
 }
 
 #endif

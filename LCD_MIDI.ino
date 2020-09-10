@@ -25,10 +25,6 @@ LCD lcd(Constants::LCD_RS, Constants::LCD_E,
 // this object stores all the midi routings
 RoutingMatrix routingMatrix;
 
-Constants::menu_entries menu_entry;
-
-// current state (monitor/edit/save/reset)
-Constants::working_mode working_mode;
 // screen refresh timer
 unsigned long time;
 
@@ -41,7 +37,7 @@ static byte input_value = 0;
 static byte cursor_pos = 0;
 
 // mode counter
-static byte current_mode = 0; // monitor
+static byte work_mode = 0; // perform
 #pragma endregion
 
 void setup()
@@ -49,8 +45,6 @@ void setup()
   midiSender.start();
   lcd.start();
   usbController.start();
-
-  working_mode = Constants::working_mode::edit;
 }
 
 void loop()
@@ -64,8 +58,8 @@ void loop()
   
   if(mode.isPressed())
   {
-    current_mode = (current_mode + 1) % Constants::NUM_MODES;
-    lcd.switchMode(current_mode); //mode cycle
+    work_mode = (work_mode + 1) % Constants::NUM_WORKING_MODES;
+    lcd.switchMode(work_mode); //mode cycle
   }
   
   if(select.isPressed())
@@ -92,7 +86,7 @@ void loop()
   // check if it's time to refresh the screen
   // in the future this will be main lcd loop for everything screen-related
   if((time - last_screen_update) > Constants::SCREEN_REFRESH_RATE
-                            && working_mode == Constants::working_mode::perform)
+                            && work_mode == 0)
   {
 
     // dispatcher.refreshScreen();
@@ -105,107 +99,83 @@ void loop()
 }
 
 
-void switchMode()
-{
-  current_mode = (current_mode + 1) % Constants::NUM_MODES;
-}
-
-void updateCursorPosition()
-{ 
-  cursor_pos = (cursor_pos + 1) % Constants::NUM_CURSOR_POS;
-  switch (cursor_pos)
-  {
-  case Constants::menu_entries::Output_channel:
-    lcd.setCursor(4, 1);
-    break;
-  
-  case Constants::menu_entries::Output_cc:
-    lcd.setCursor(8, 1);
-    break;
-
-  default:
-    lcd.setCursor(0, 0);
-    lcd.print(cursor_pos);
-    break;
-  }
-}
 void increaseSelectedValue()
 {
-  int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
-                                                                  + input_cc;
-  int old_value = routingMatrix.getDestination(lookup_address);
-  int new_value;
-  //fjgure what needs to be changed
-  //change it 
-  //update display value
-  switch (cursor_pos)
-  {
-  case Constants::menu_entries::Output_channel:
-    new_value = 
-          (old_value + Constants::NUM_CONTROLLERS) >= Constants::MATRIX_SIZE 
-                                    ? old_value % Constants::NUM_CONTROLLERS
-                                    : old_value + Constants::NUM_CONTROLLERS;
+  // int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
+  //                                                                 + input_cc;
+  // int old_value = routingMatrix.getDestination(lookup_address);
+  // int new_value;
+  // //fjgure what needs to be changed
+  // //change it 
+  // //update display value
+  // switch (cursor_pos)
+  // {
+  // case Constants::menu_entries::Output_channel:
+  //   new_value = 
+  //         (old_value + Constants::NUM_CONTROLLERS) >= Constants::MATRIX_SIZE 
+  //                                   ? old_value % Constants::NUM_CONTROLLERS
+  //                                   : old_value + Constants::NUM_CONTROLLERS;
     
-    // put it back
-    routingMatrix.setDestination(lookup_address, new_value);
+  //   // put it back
+  //   routingMatrix.setDestination(lookup_address, new_value);
 
-    // update screen
-    lcd.updateDisplayValue(0, (new_value / Constants::NUM_CONTROLLERS) + 1);
-    break;
+  //   // update screen
+  //   lcd.updateDisplayValue(0, (new_value / Constants::NUM_CONTROLLERS) + 1);
+  //   break;
 
-  case Constants::menu_entries::Output_cc:
-    byte channel_offset = old_value / Constants::NUM_CONTROLLERS;
-    new_value = 
-          (old_value + 1) >= ((Constants::NUM_CONTROLLERS * channel_offset) 
-            + Constants::NUM_CONTROLLERS) ? 
-              (Constants::NUM_CONTROLLERS * channel_offset) : (old_value + 1);
+  // case Constants::menu_entries::Output_cc:
+  //   byte channel_offset = old_value / Constants::NUM_CONTROLLERS;
+  //   new_value = 
+  //         (old_value + 1) >= ((Constants::NUM_CONTROLLERS * channel_offset) 
+  //           + Constants::NUM_CONTROLLERS) ? 
+  //             (Constants::NUM_CONTROLLERS * channel_offset) : (old_value + 1);
 
-    // put it back
-    routingMatrix.setDestination(lookup_address, new_value);
+  //   // put it back
+  //   routingMatrix.setDestination(lookup_address, new_value);
 
-    // update screen
-    lcd.updateDisplayValue(1, new_value % Constants::NUM_CONTROLLERS);
-    break;
-  }
+  //   // update screen
+  //   lcd.updateDisplayValue(1, new_value % Constants::NUM_CONTROLLERS);
+  //   break;
+  // }
 }
 
 void decreaseSelectedValue()
 {
-  int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
-                                                                  + input_cc;
-  int old_value = routingMatrix.getDestination(lookup_address);
-  int new_value;
-  //fjgure what needs to be changed
-  //change it 
-  //update display value
-  switch (cursor_pos)
-  {
-  case Constants::menu_entries::Output_channel:
-    new_value = (old_value - Constants::NUM_CONTROLLERS) < 0 ? 
-              Constants::MATRIX_SIZE - Constants::NUM_CONTROLLERS + old_value: 
-                                      old_value - Constants::NUM_CONTROLLERS;
+  // int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
+  //                                                                 + input_cc;
+  // int old_value = routingMatrix.getDestination(lookup_address);
+  // int new_value;
+  // //fjgure what needs to be changed
+  // //change it 
+  // //update display value
+  // switch (cursor_pos)
+  // {
+  // case Constants::menu_entries::Output_channel:
+  //   new_value = (old_value - Constants::NUM_CONTROLLERS) < 0 ? 
+  //             Constants::MATRIX_SIZE - Constants::NUM_CONTROLLERS + old_value: 
+  //                                     old_value - Constants::NUM_CONTROLLERS;
     
-    // put it back
-    routingMatrix.setDestination(lookup_address, new_value);
+  //   // put it back
+  //   routingMatrix.setDestination(lookup_address, new_value);
 
-    // update screen
-    lcd.updateDisplayValue(0, (new_value / Constants::NUM_CONTROLLERS) + 1);
-    break;
+  //   // update screen
+  //   lcd.updateDisplayValue(0, (new_value / Constants::NUM_CONTROLLERS) + 1);
+  //   break;
 
-  case Constants::menu_entries::Output_cc:
-    byte channel_offset = old_value / Constants::NUM_CONTROLLERS;
-    new_value = 
-          (old_value - 1) < (Constants::NUM_CONTROLLERS * channel_offset) ? 
-                  ((Constants::NUM_CONTROLLERS * (channel_offset + 1)) - 1) : 
-                                                              (old_value - 1);
+  // case Constants::menu_entries::Output_cc:
+  //   byte channel_offset = old_value / Constants::NUM_CONTROLLERS;
+  //   new_value = 
+  //         (old_value - 1) < (Constants::NUM_CONTROLLERS * channel_offset) ? 
+  //                 ((Constants::NUM_CONTROLLERS * (channel_offset + 1)) - 1) : 
+  //                                                             (old_value - 1);
 
-    // put it back
-    routingMatrix.setDestination(lookup_address, new_value);
+  //   // put it back
+  //   routingMatrix.setDestination(lookup_address, new_value);
 
-    // update screen
-    lcd.updateDisplayValue(1, new_value % Constants::NUM_CONTROLLERS);
-    break;
-  }
+  //   // update screen
+  //   lcd.updateDisplayValue(1, new_value % Constants::NUM_CONTROLLERS);
+  //   break;
+  // }
 }
 
 void refreshScreen()
