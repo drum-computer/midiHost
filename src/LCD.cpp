@@ -121,3 +121,8 @@ void LCD::printModeText(byte mode)
   LiquidCrystal::setCursor(Constants::CURSOR_POSITIONS[work_mode][0][0], 
                               Constants::CURSOR_POSITIONS[work_mode][0][1]);
 }
+
+byte LCD::getCursorPosition()
+{
+  return cursor_position;
+}

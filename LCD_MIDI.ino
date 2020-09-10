@@ -33,9 +33,6 @@ static byte input_midi_channel = 0;
 static byte input_cc = 0;
 static byte input_value = 0;
 
-// this variable is updated by next button
-static byte cursor_pos = 0;
-
 // mode counter
 static byte work_mode = 0; // perform
 #pragma endregion
@@ -69,12 +66,65 @@ void loop()
   
   if(up.isPressed())
   {
-    increaseSelectedValue(); 
+    switch (work_mode)
+    {
+    case 0: // perform
+      // do nothing
+      break;
+    
+    case 1: // edit
+      // lcd return cursor position
+      byte cursor_position = lcd.getCursorPosition();
+      if(cursor_position == 0)
+        routingMatrix.increaseChannel(&input_midi_channel, &input_cc);
+      // matrix change routing
+      // lcd update current value
+      break;
+
+    case 2: // save
+      // memory save state
+      // display show success
+      break;
+
+    case 3: // reset
+      // display confirmation
+      // set working mode to 4 (reset confirmation screen)
+      break;
+    
+    case 4: // confirm factory reset
+      // matrix init
+      // save init matrix to mem
+      // display show success
+      // return working mode to 3 (reset screen)
+      break;
+    } 
   }
 
   if(down.isPressed())
   {
-    decreaseSelectedValue(); 
+    switch (work_mode)
+    {
+    case 0: // perform
+      // do nothing
+      break;
+    
+    case 1: // edit
+      // matrix change routing
+      // lcd update current value
+      break;
+
+    case 2: // save
+      // do nothing
+      break;
+
+    case 3: // reset
+      // do nothing
+      break;
+    
+    case 4: // confirm factory reset
+      // do nothing
+      break;
+    } 
   }
   
   if(usbController.hasChanged())
@@ -86,7 +136,7 @@ void loop()
   // check if it's time to refresh the screen
   // in the future this will be main lcd loop for everything screen-related
   if((time - last_screen_update) > Constants::SCREEN_REFRESH_RATE
-                            && work_mode == 0)
+                                                          && work_mode == 0)
   {
 
     // dispatcher.refreshScreen();

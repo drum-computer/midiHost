@@ -26,6 +26,8 @@ public:
   void LCD::updateDisplayValue(byte cursor_position, byte display_val);
 
   void LCD::switchMode(byte mode);
+
+  byte LCD::getCursorPosition();
 };
 
 

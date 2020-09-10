@@ -13,7 +13,8 @@ public:
   int RoutingMatrix::getDestination(int address);
 
   void RoutingMatrix::setDestination(int address, int value);
-
+  
+  void RoutingMatrix::increaseChannel(byte *input_midi_channel, byte *input_cc);
 };
 
 
