@@ -39,30 +39,33 @@ void LCD::printLeadingZeroes(int val, byte max_digits)
     }
 }
 
-void LCD::cycleCursorPosition(byte *available_positions)
+void LCD::cycleCursorPosition()
 {
-
+  cursor_position = (cursor_position + 1) % num_positions[work_mode];
+  byte cursor_x = cursor_positions[work_mode][cursor_position][0];
+  byte cursor_y = cursor_positions[work_mode][cursor_position][1];
+  LiquidCrystal::setCursor(cursor_x, cursor_y);
 }
 
 void LCD::updateDisplayValue(byte cursor_position, byte display_val)
 {
-  cycleCursorPosition();
+  // cycleCursorPosition();
   
-  switch (cursor_position)
-  {
-  case 0: case 3: // means we are changing channel number
-    printLeadingZeroes(display_val, 2);
-    LiquidCrystal::print(display_val);
-    break;
-  case 1: case 4: // means we are changing cc number
-    printLeadingZeroes(display_val, 3);
-    LiquidCrystal::print(display_val);
-    break;
-  case 2: case 5: // means we are changing test pot val
-    printLeadingZeroes(display_val, 3);
-    LiquidCrystal::print(display_val);
-    break;
-  }
+  // switch (cursor_position)
+  // {
+  // case 0: case 3: // means we are changing channel number
+  //   printLeadingZeroes(display_val, 2);
+  //   LiquidCrystal::print(display_val);
+  //   break;
+  // case 1: case 4: // means we are changing cc number
+  //   printLeadingZeroes(display_val, 3);
+  //   LiquidCrystal::print(display_val);
+  //   break;
+  // case 2: case 5: // means we are changing test pot val
+  //   printLeadingZeroes(display_val, 3);
+  //   LiquidCrystal::print(display_val);
+  //   break;
+  // }
 }
 
 void LCD::switchMode(byte mode)
