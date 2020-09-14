@@ -9,6 +9,12 @@ RoutingMatrix::RoutingMatrix()
     matrix[i] = i;
 }
 
+void RoutingMatrix::clear()
+{
+  for(int i = 0; i < Constants::MATRIX_SIZE; i++)
+    matrix[i] = i;
+}
+
 int RoutingMatrix::getDestination(int address)
 {
   return matrix[address];

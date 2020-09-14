@@ -10,6 +10,8 @@ private:
 public:
   RoutingMatrix();
 
+  void RoutingMatrix::clear();
+
   int RoutingMatrix::getDestination(int address);
 
   void RoutingMatrix::setDestination(int address, int value);

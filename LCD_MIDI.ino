@@ -112,6 +112,9 @@ void loop()
     {
         if(lcd.getCursorPosition() == 0)
         {
+          routingMatrix.clear();
+          // save cleared matrix to eeprom
+          //
           lcd.showResetSuccess();
           work_mode = Constants::WORK_MODES::RESET;
         }
