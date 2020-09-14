@@ -17,6 +17,11 @@ public:
   byte RoutingMatrix::increaseChannel(byte *input_midi_channel, byte *input_cc);
 
   byte RoutingMatrix::decreaseChannel(byte *input_midi_channel, byte *input_cc);
+
+  byte RoutingMatrix::increaseCC(byte *input_midi_channel, byte *input_cc);
+
+  byte RoutingMatrix::decreaseCC(byte *input_midi_channel, byte *input_cc);
+
 };
 
 

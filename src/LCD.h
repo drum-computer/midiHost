@@ -28,6 +28,13 @@ public:
   void LCD::switchMode(byte mode);
 
   byte LCD::getCursorPosition();
+
+  void LCD::refresh(byte mode, byte input_midi_channel, byte input_cc, 
+               byte input_value, byte output_midi_channel, byte output_cc);
+
+  void LCD::showSuccess();
+
+  void LCD::showResetSuccess();
 };
 
 

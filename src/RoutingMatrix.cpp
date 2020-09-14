@@ -52,6 +52,46 @@ byte RoutingMatrix::decreaseChannel(byte *input_midi_channel, byte *input_cc)
   // put it back
   setDestination(lookup_address, new_value);
 
-  // update screen
+  // return display value
   return (new_value / Constants::NUM_CONTROLLERS) + 1;
+}
+
+
+byte RoutingMatrix::increaseCC(byte *input_midi_channel, byte *input_cc)
+{
+  int lookup_address = (*input_midi_channel * Constants::NUM_CONTROLLERS) 
+                                                                    + *input_cc;
+  int old_value = getDestination(lookup_address);
+  int new_value;
+  byte channel_offset = old_value / Constants::NUM_CONTROLLERS;
+  new_value = 
+        (old_value + 1) >= ((Constants::NUM_CONTROLLERS * channel_offset) 
+          + Constants::NUM_CONTROLLERS) ? 
+            (Constants::NUM_CONTROLLERS * channel_offset) : (old_value + 1);
+
+  // put it back
+  setDestination(lookup_address, new_value);
+
+  // return display value
+  return new_value % Constants::NUM_CONTROLLERS;
+}
+
+byte RoutingMatrix::decreaseCC(byte *input_midi_channel, byte *input_cc)
+{
+  int lookup_address = (*input_midi_channel * Constants::NUM_CONTROLLERS) 
+                                                                    + *input_cc;
+  int old_value = getDestination(lookup_address);
+  int new_value;
+
+  byte channel_offset = old_value / Constants::NUM_CONTROLLERS;
+  new_value = 
+        (old_value - 1) < (Constants::NUM_CONTROLLERS * channel_offset) ? 
+                ((Constants::NUM_CONTROLLERS * (channel_offset + 1)) - 1) : 
+                                                            (old_value - 1);
+
+  // put it back
+  setDestination(lookup_address, new_value);
+
+  // return display value
+  return new_value % Constants::NUM_CONTROLLERS;
 }

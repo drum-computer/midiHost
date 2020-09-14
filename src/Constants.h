@@ -24,14 +24,15 @@ namespace Constants
  
   // display number of possible positions for the display cursor 
   const byte SCREEN_REFRESH_RATE = 100;     
-  const byte CURSOR_POSITIONS[4][2][2]{
+  const byte CURSOR_POSITIONS[5][2][2]{
                                   {{0, 0}, {0, 0}}, 
-                                  {{10, 3}, {16, 3}}, 
+                                  {{10, 3}, {15, 3}}, 
                                   {{6, 2}, {6, 2}},
-                                  {{6, 2}, {6, 2}}};
+                                  {{6, 2}, {6, 2}},
+                                  {{5, 2}, {9, 2}}};
   
   // number of available cursor pos for each work mode (basically array lengths)
-  const byte NUM_CURSOR_POS[4]{2, 2, 2, 2};
+  const byte NUM_CURSOR_POS[5]{2, 2, 2, 2, 2};
   // working mode
   const byte NUM_WORKING_MODES = 4;
 

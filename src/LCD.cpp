@@ -98,7 +98,7 @@ void LCD::printModeText(byte mode)
     LiquidCrystal::setCursor(0, 0);
     LiquidCrystal::print(F("mode: edit"));
     LiquidCrystal::setCursor(0, 2);
-    LiquidCrystal::print(F("usb -> ch01 cc000"));
+    LiquidCrystal::print(F("usb  -> ch01 cc000"));
     LiquidCrystal::setCursor(0, 3);
     LiquidCrystal::print(F("midi <- ch01 cc000"));
     break;
@@ -112,7 +112,7 @@ void LCD::printModeText(byte mode)
     LiquidCrystal::print(F("current state"));
     break;
   
-  case Constants::WORK_MODES::RESET:
+  case Constants::WORK_MODES::RESET :
     LiquidCrystal::setCursor(0, 0);
     LiquidCrystal::print(F("mode: reset"));
     LiquidCrystal::setCursor(0, 2);
@@ -120,6 +120,15 @@ void LCD::printModeText(byte mode)
     LiquidCrystal::setCursor(0, 3);
     LiquidCrystal::print(F("to default state"));
     break;
+
+  case Constants::WORK_MODES::CONFIRM_RESET :
+  LiquidCrystal::clear();
+  LiquidCrystal::setCursor(2, 0);
+  LiquidCrystal::print(F("Reset: Confirm?"));
+  LiquidCrystal::setCursor(5, 2);
+  LiquidCrystal::print(F("Yes No"));
+  LiquidCrystal::setCursor(9, 2);
+  break;
   }
   // init cursor position for selected work mode
   LiquidCrystal::setCursor(Constants::CURSOR_POSITIONS[work_mode][0][0], 
@@ -129,4 +138,72 @@ void LCD::printModeText(byte mode)
 byte LCD::getCursorPosition()
 {
   return cursor_position;
+}
+
+void LCD::refresh(byte mode, byte input_midi_channel, byte input_cc, 
+                  byte input_value, byte output_midi_channel, byte output_cc)
+{
+  byte cursor_x = Constants::CURSOR_POSITIONS[work_mode][cursor_position][0];
+  byte cursor_y = Constants::CURSOR_POSITIONS[work_mode][cursor_position][1];
+  
+  switch (mode)
+  {
+  case Constants::WORK_MODES::PERFORM:
+    LiquidCrystal::setCursor(5, 2);
+    printLeadingZeroes(input_midi_channel, 2);
+    LiquidCrystal::print(input_midi_channel + 1);
+    LiquidCrystal::setCursor(10, 2);
+    printLeadingZeroes(input_cc, 3);
+    LiquidCrystal::print(input_cc);
+    LiquidCrystal::setCursor(17, 2);
+    printLeadingZeroes(input_value, 3);
+    LiquidCrystal::print(input_value);
+
+    LiquidCrystal::setCursor(5, 3);
+    printLeadingZeroes(output_midi_channel, 2);
+    LiquidCrystal::print(output_midi_channel + 1);
+    LiquidCrystal::setCursor(10, 3);
+    printLeadingZeroes(output_cc, 3);
+    LiquidCrystal::print(output_cc);
+    LiquidCrystal::setCursor(17, 3);
+    printLeadingZeroes(input_value, 3);
+    LiquidCrystal::print(input_value);
+    break;
+  
+  case Constants::WORK_MODES::EDIT:
+    LiquidCrystal::setCursor(10, 2);
+    printLeadingZeroes(input_midi_channel, 2);
+    LiquidCrystal::print(input_midi_channel + 1);
+    LiquidCrystal::setCursor(15, 2);
+    printLeadingZeroes(input_cc, 3);
+    LiquidCrystal::print(input_cc);
+
+    LiquidCrystal::setCursor(10, 3);
+    printLeadingZeroes(output_midi_channel, 2);
+    LiquidCrystal::print(output_midi_channel + 1);
+    LiquidCrystal::setCursor(15, 3);
+    printLeadingZeroes(output_cc, 3);
+    LiquidCrystal::print(output_cc);
+    break;
+  }
+  LiquidCrystal::setCursor(cursor_x, cursor_y);
+}
+
+void LCD::showSuccess()
+{
+  LiquidCrystal::clear();
+  LiquidCrystal::setCursor(5, 2);
+  LiquidCrystal::print(F("Saved!"));
+  delay(1000);
+  switchMode(Constants::WORK_MODES::SAVE);
+}
+
+
+void LCD::showResetSuccess()
+{
+  LiquidCrystal::clear();
+  LiquidCrystal::setCursor(2, 2);
+  LiquidCrystal::print(F("Reset Complete!"));
+  delay(1000);
+  switchMode(Constants::WORK_MODES::RESET);
 }
