@@ -4,6 +4,7 @@
 #include "src/MidiSender.h"
 #include "src/LCD.h"
 #include "src/RoutingMatrix.h"
+#include "src/Mem.h"
 #pragma region //objects and variables initialization 
 // interaction buttons
 Button mode(Constants::MODE_BUTTON_PIN);
@@ -25,6 +26,9 @@ LCD lcd(Constants::LCD_RS, Constants::LCD_E,
 // this object stores all the midi routings
 RoutingMatrix routingMatrix;
 
+// eeprom
+Mem mem(Constants::MEM_CHIP_ADDR);
+
 // screen refresh timer
 unsigned long time;
 
@@ -45,6 +49,13 @@ void setup()
   midiSender.start();
   lcd.start();
   usbController.start();
+  mem.recallAll(routingMatrix.matrix);
+  byte msb = mem.readCell(0);
+  byte lsb = mem.readCell(1);
+  lcd.setCursor(0, 0);
+  lcd.print(msb);
+  lcd.setCursor(0, 1);  
+  lcd.print(lsb);
 }
 
 void loop()
@@ -64,8 +75,6 @@ void loop()
   
   if(select.isPressed())
   {
-    lcd.setCursor(0,0);
-    lcd.print(work_mode); 
     lcd.cycleCursorPosition();
   }
   
@@ -78,38 +87,39 @@ void loop()
       break;
     
     case Constants::WORK_MODES::EDIT:
-    {
-      // lcd return cursor position
-      byte cursor_position = lcd.getCursorPosition();
-      if(cursor_position == 0)
       {
-        byte display_val = 
+        // lcd return cursor position
+        byte cursor_position = lcd.getCursorPosition();
+        if(cursor_position == 0)
+        {
+          byte display_val = 
                   routingMatrix.increaseChannel(&input_midi_channel, &input_cc);
-        lcd.updateDisplayValue(cursor_position, display_val);
-      } else if(cursor_position == 1)
-      {
-        byte display_val = 
-                  routingMatrix.increaseCC(&input_midi_channel, &input_cc);
-        lcd.updateDisplayValue(cursor_position, display_val);
+          lcd.updateDisplayValue(cursor_position, display_val);
+        } else if(cursor_position == 1)
+        {
+          byte display_val = 
+                    routingMatrix.increaseCC(&input_midi_channel, &input_cc);
+          lcd.updateDisplayValue(cursor_position, display_val);
+        }
+        break;
       }
-      break;
-    }
 
     case Constants::WORK_MODES::SAVE:
       // memory save state
+      mem.storeAll(routingMatrix.matrix);
       lcd.showSuccess();
       break;
 
     case Constants::WORK_MODES::RESET:
-    {
-      // display confirmation
-      work_mode = Constants::WORK_MODES::CONFIRM_RESET;
-      lcd.switchMode(work_mode);
-      break;
-    }  
+      {
+        // display confirmation
+        work_mode = Constants::WORK_MODES::CONFIRM_RESET;
+        lcd.switchMode(work_mode);
+        break;
+      }  
     
     case Constants::WORK_MODES::CONFIRM_RESET:
-    {
+      {
         if(lcd.getCursorPosition() == 0)
         {
           routingMatrix.clear();
@@ -123,8 +133,8 @@ void loop()
           work_mode = Constants::WORK_MODES::RESET;
           lcd.switchMode(work_mode);
         }
-      break;
-    }
+        break;
+      }
     }
   }
 

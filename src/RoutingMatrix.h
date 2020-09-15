@@ -6,8 +6,8 @@
 class RoutingMatrix
 {
 private:
-  int matrix[Constants::MATRIX_SIZE];  
 public:
+  int matrix[Constants::MATRIX_SIZE];  
   RoutingMatrix();
 
   void RoutingMatrix::clear();

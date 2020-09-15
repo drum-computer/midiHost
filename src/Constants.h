@@ -5,10 +5,10 @@
 namespace Constants
 {
   // arduino pins
-  const byte MODE_BUTTON_PIN =     A5;
-  const byte SELECT_BUTTON_PIN =   A4;
-  const byte UP_BUTTON_PIN =       A2;
-  const byte DOWN_BUTTON_PIN =     A3;
+  const byte MODE_BUTTON_PIN =     A3;
+  const byte SELECT_BUTTON_PIN =   A2;
+  const byte UP_BUTTON_PIN =       A0;
+  const byte DOWN_BUTTON_PIN =     A1;
 
   const byte LCD_RS =               7;
   const byte LCD_E =                6;
@@ -18,9 +18,12 @@ namespace Constants
   const byte LCD_D7 =               2;
 
   // midi and matrix settings
-  const byte NUM_CHANNELS =         4;
+  const byte NUM_CHANNELS =         1;
   const byte NUM_CONTROLLERS =    128;
   const int MATRIX_SIZE = NUM_CHANNELS * NUM_CONTROLLERS;
+
+  const byte MEM_CHIP_ADDR = 0x50;
+  const byte MEM_PAGE_SIZE = 16;
  
   // display number of possible positions for the display cursor 
   const byte SCREEN_REFRESH_RATE = 100;     
