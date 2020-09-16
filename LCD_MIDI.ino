@@ -50,12 +50,12 @@ void setup()
   lcd.start();
   usbController.start();
   mem.recallAll(routingMatrix.matrix);
-  byte msb = mem.readCell(0);
-  byte lsb = mem.readCell(1);
-  lcd.setCursor(0, 0);
-  lcd.print(msb);
-  lcd.setCursor(0, 1);  
-  lcd.print(lsb);
+  // byte msb = mem.readCell(0);
+  // byte lsb = mem.readCell(1);
+  // lcd.setCursor(0, 0);
+  // lcd.print(msb);
+  // lcd.setCursor(0, 1);  
+  // lcd.print(lsb);
 }
 
 void loop()

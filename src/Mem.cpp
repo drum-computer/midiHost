@@ -16,18 +16,15 @@ void Mem::storeAll(int data[])
   for(int page = 0; page < num_pages; page++)
   {
     Wire.beginTransmission(_chip_addr);
-    int start_address = page * Constants::MEM_PAGE_SIZE;
-    Wire.write((int)(start_address >> 8));   // MSB
-    Wire.write((int)(start_address & 0xFF)); // LSB
+    Wire.write((int)(page * Constants::MEM_PAGE_SIZE) >> 8); // mem address MSB
+    Wire.write((int)(page * Constants::MEM_PAGE_SIZE) & 0xFF); // mem address LSB
     
     for(int index = 0; index < Constants::MEM_PAGE_SIZE; index++)
-    {
-      int mem_address = (page * Constants::MEM_PAGE_SIZE) + index;
-      
+    {  
       if((index % 2) == 0)  // on even cycle write data MSB
-        Wire.write((int)(data[mem_address] >> 8));
+        Wire.write(data[(((page * Constants::MEM_PAGE_SIZE) + index) / 2)] >> 8);
       else                 //  on odd cycle write data LSB
-        Wire.write((int)(data[mem_address] & 0xFF));
+        Wire.write(data[(((page * Constants::MEM_PAGE_SIZE) + index) / 2)] & 0xFF);
     }
       
     Wire.endTransmission();
@@ -40,23 +37,22 @@ void Mem::recallAll(int matrix[])
   byte rdata[2]{0x0, 0x0};
 
   // multiply matrix size by two since data is stored in MSB/LSB fashion
-  for(int i = 0; i < (Constants::MATRIX_SIZE); i++)
+  for(int i = 0; i < Constants::MATRIX_SIZE; i++)
   {
-    for(int z = 0; z < 2; z++)
+    byte mem_addr = i * 2;
+    Wire.beginTransmission(_chip_addr);
+    Wire.write((int)(mem_addr >> 8));   // MSB
+    Wire.write((int)(mem_addr & 0xFF)); // LSB
+    Wire.endTransmission();
+  
+    Wire.requestFrom(_chip_addr, 2);
+    while(Wire.available())
     {
-      Wire.beginTransmission(_chip_addr);
-      Wire.write((int)(i >> 8));   // MSB
-      Wire.write((int)(i & 0xFF)); // LSB
-      Wire.endTransmission();
-    
-      Wire.requestFrom(_chip_addr, 1);
-      if((z % 2) == 0) // means we are reading MSB data byte
-        rdata[0] = Wire.read();
-      else             // means we are reading LSB data byte
-        rdata[1] = Wire.read();
+      rdata[0] = Wire.read();
+      rdata[1] = Wire.read();
+      unsigned int data = ((rdata[0] & 0xff) << 8) | (rdata[1] & 0xff);
+      matrix[i] = data;
     }
-    int data = ((rdata[0] & 0xff) << 8) | (rdata[1] & 0xff);
-    matrix[i] = data;
   }
 }
 
