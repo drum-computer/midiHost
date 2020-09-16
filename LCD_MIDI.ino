@@ -49,13 +49,8 @@ void setup()
   midiSender.start();
   lcd.start();
   usbController.start();
+  // load last saved state on startup
   mem.recallAll(routingMatrix.matrix);
-  // byte msb = mem.readCell(0);
-  // byte lsb = mem.readCell(1);
-  // lcd.setCursor(0, 0);
-  // lcd.print(msb);
-  // lcd.setCursor(0, 1);  
-  // lcd.print(lsb);
 }
 
 void loop()
@@ -124,7 +119,7 @@ void loop()
         {
           routingMatrix.clear();
           // save cleared matrix to eeprom
-          //
+          mem.storeAll(routingMatrix.matrix);
           lcd.showResetSuccess();
           work_mode = Constants::WORK_MODES::RESET;
         }

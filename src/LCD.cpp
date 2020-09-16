@@ -11,9 +11,9 @@ void LCD::start()
   LiquidCrystal::setCursor(0, 0);
   LiquidCrystal::print(F("mode: perform"));
   LiquidCrystal::setCursor(0, 2);
-  LiquidCrystal::print(F("-> ch01 cc000 val000"));
+  LiquidCrystal::print(F("-> ch01 cc___ val___"));
   LiquidCrystal::setCursor(0, 3);
-  LiquidCrystal::print(F("<- ch01 cc000 val000"));
+  LiquidCrystal::print(F("<- ch01 cc___ val___"));
   
   //enable blinking cursor
   LiquidCrystal::cursor();
@@ -89,18 +89,18 @@ void LCD::printModeText(byte mode)
     LiquidCrystal::setCursor(0, 0);
     LiquidCrystal::print(F("mode: perform"));
     LiquidCrystal::setCursor(0, 2);
-    LiquidCrystal::print(F("-> ch01 cc000 val000"));
+    LiquidCrystal::print(F("-> ch01 cc___ val___"));
     LiquidCrystal::setCursor(0, 3);
-    LiquidCrystal::print(F("<- ch01 cc000 val000"));
+    LiquidCrystal::print(F("<- ch01 cc___ val___"));
     break;
   
   case Constants::WORK_MODES::EDIT:
     LiquidCrystal::setCursor(0, 0);
     LiquidCrystal::print(F("mode: edit"));
     LiquidCrystal::setCursor(0, 2);
-    LiquidCrystal::print(F("usb  -> ch01 cc000"));
+    LiquidCrystal::print(F("usb  -> ch__ cc___"));
     LiquidCrystal::setCursor(0, 3);
-    LiquidCrystal::print(F("midi <- ch01 cc000"));
+    LiquidCrystal::print(F("midi <- ch__ cc___"));
     break;
 
   case Constants::WORK_MODES::SAVE:
