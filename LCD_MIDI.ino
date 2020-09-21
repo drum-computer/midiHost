@@ -177,12 +177,16 @@ void loop()
     usbController.readController(&input_midi_channel, &input_cc, &input_value);
     int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
                                                                      + input_cc;
-      
-    output_midi_channel = routingMatrix.getDestination(lookup_address) / 
-                                                  Constants::NUM_CONTROLLERS;
 
-    output_cc = routingMatrix.getDestination(lookup_address) %
-                                                  Constants::NUM_CONTROLLERS;
+    output_midi_channel = mem.readCell(lookup_address) /  
+                                                    Constants::NUM_CONTROLLERS;
+    // output_midi_channel = routingMatrix.getDestination(lookup_address) / 
+    //                                               Constants::NUM_CONTROLLERS;
+
+    output_cc = mem.readCell(lookup_address) % Constants::NUM_CONTROLLERS;
+    
+    // output_cc = routingMatrix.getDestination(lookup_address) %
+    //                                               Constants::NUM_CONTROLLERS;
     if(work_mode != Constants::WORK_MODES::EDIT)
     {
       midiSender.sendCC(output_midi_channel, output_cc, input_value);  

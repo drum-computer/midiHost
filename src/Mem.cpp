@@ -67,18 +67,22 @@ void Mem::cellWrite(unsigned int cell_addr, byte data)
   delay(5);
 }
 
-byte Mem::readCell(unsigned int eeaddress) 
+int Mem::readCell(unsigned int eeaddress) 
 {
-  byte rdata = 0xFF;
+  byte rdata[2]{0, 0};
+  int data = 0;
  
   Wire.beginTransmission(_chip_addr);
-  Wire.write((int)(eeaddress >> 8));   // MSB
-  Wire.write((int)(eeaddress & 0xFF)); // LSB
+  Wire.write((int)((eeaddress * 2) >> 8));// MSB *2 because each odd addr is LSB
+  Wire.write((int)((eeaddress * 2) & 0xFF)); // LSB
   Wire.endTransmission();
  
-  Wire.requestFrom(_chip_addr, 1);
- 
-  rdata = Wire.read();
- 
-  return rdata;
+  Wire.requestFrom(_chip_addr, 2);
+  while(Wire.available())
+  {
+    rdata[0] = Wire.read();
+    rdata[1] = Wire.read();
+    data = ((rdata[0] & 0xff) << 8) | (rdata[1] & 0xff);
+  }
+  return data;
 }

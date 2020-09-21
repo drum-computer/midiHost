@@ -13,7 +13,7 @@ public:
   void Mem::storeAll(int data[]);
   void Mem::recallAll(int data[]);
   void Mem::cellWrite(unsigned int cell_addr, byte data);
-  byte Mem::readCell(unsigned int eeaddress);
+  int Mem::readCell(unsigned int eeaddress);
 };
 
 #endif
