@@ -32,6 +32,29 @@ void Mem::storeAll(int data[])
   }
 }
 
+void Mem::storeBuffer(int data[2][Constants::BUFFER_SIZE], byte data_size)
+{
+  // multiply matrix size by 2 since each int in it is 2 bytes long
+  for(int page = 0; page < data_size; page++)
+  {
+    Wire.beginTransmission(_chip_addr);
+    Wire.write((int)(data[0][page] * 2) >> 8); // mem address MSB
+    Wire.write((int)(data[0][page] * 2) & 0xFF); // mem address LSB
+    
+    for(int index = 0; index < 2; index++)
+    {  
+      if((index % 2) == 0)  // on even cycle write data MSB
+        Wire.write(data[1][page] >> 8);
+      else                 //  on odd cycle write data LSB
+        Wire.write(data[1][page] & 0xFF);
+    }
+      
+    Wire.endTransmission();
+    delay(5);
+  }
+}
+
+
 void Mem::recallAll(int matrix[])
 {
   byte rdata[2]{0x0, 0x0};

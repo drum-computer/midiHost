@@ -50,7 +50,10 @@ void setup()
   lcd.start();
   usbController.start();
   // load last saved state on startup
-  mem.recallAll(routingMatrix.matrix);
+  // mem.recallAll(routingMatrix.matrix);
+  // int cell = mem.readCell(0);
+  // lcd.setCursor(0,0);
+  // lcd.print(cell);
 }
 
 void loop()
@@ -88,12 +91,12 @@ void loop()
         if(cursor_position == 0)
         {
           byte display_val = 
-                  routingMatrix.increaseChannel(&input_midi_channel, &input_cc);
+              routingMatrix.increaseChannelEXT(&input_midi_channel, &input_cc);
           lcd.updateDisplayValue(cursor_position, display_val);
         } else if(cursor_position == 1)
         {
           byte display_val = 
-                    routingMatrix.increaseCC(&input_midi_channel, &input_cc);
+                    routingMatrix.increaseCCEXT(&input_midi_channel, &input_cc);
           lcd.updateDisplayValue(cursor_position, display_val);
         }
         break;
@@ -147,12 +150,12 @@ void loop()
       if(cursor_position == 0)
       {
         byte display_val = 
-                  routingMatrix.decreaseChannel(&input_midi_channel, &input_cc);
+                  routingMatrix.decreaseChannelEXT(&input_midi_channel, &input_cc);
         lcd.updateDisplayValue(cursor_position, display_val);
       } else if(cursor_position == 1)
       {
         byte display_val = 
-                  routingMatrix.decreaseCC(&input_midi_channel, &input_cc);
+                  routingMatrix.decreaseCCEXT(&input_midi_channel, &input_cc);
         lcd.updateDisplayValue(cursor_position, display_val);
       }
       break;
@@ -175,15 +178,18 @@ void loop()
   if(usbController.hasChanged())
   {
     usbController.readController(&input_midi_channel, &input_cc, &input_value);
-    int lookup_address = (input_midi_channel * Constants::NUM_CONTROLLERS) 
-                                                                     + input_cc;
+    int lookup_address = 
+                  (input_midi_channel * Constants::NUM_CONTROLLERS) + input_cc;
 
-    output_midi_channel = mem.readCell(lookup_address) /  
-                                                    Constants::NUM_CONTROLLERS;
+    output_midi_channel = 
+                    routingMatrix.getDestinationEXT(lookup_address) 
+                                                   / Constants::NUM_CONTROLLERS;
     // output_midi_channel = routingMatrix.getDestination(lookup_address) / 
     //                                               Constants::NUM_CONTROLLERS;
 
-    output_cc = mem.readCell(lookup_address) % Constants::NUM_CONTROLLERS;
+    output_cc = 
+                    routingMatrix.getDestinationEXT(lookup_address) 
+                                                   % Constants::NUM_CONTROLLERS;
     
     // output_cc = routingMatrix.getDestination(lookup_address) %
     //                                               Constants::NUM_CONTROLLERS;
