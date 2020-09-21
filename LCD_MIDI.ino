@@ -183,8 +183,10 @@ void loop()
 
     output_cc = routingMatrix.getDestination(lookup_address) %
                                                   Constants::NUM_CONTROLLERS;
-    
-    midiSender.sendCC(output_midi_channel, output_cc, input_value);  
+    if(work_mode != Constants::WORK_MODES::EDIT)
+    {
+      midiSender.sendCC(output_midi_channel, output_cc, input_value);  
+    }
 
     if(work_mode == Constants::WORK_MODES::EDIT)
     {
