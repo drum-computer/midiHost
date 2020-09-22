@@ -18,10 +18,10 @@ namespace Constants
   const byte LCD_D7 =               2;
 
   // midi and matrix settings
-  const byte NUM_CHANNELS =        2;
+  const byte NUM_CHANNELS =        16;
   const byte NUM_CONTROLLERS =    128;
   const int MATRIX_SIZE = NUM_CHANNELS * NUM_CONTROLLERS;
-  const byte BUFFER_SIZE = 4;
+  const byte BUFFER_SIZE = 32;
 
   const byte MEM_CHIP_ADDR = 0x50;
   const byte MEM_PAGE_SIZE = 16;

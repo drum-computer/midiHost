@@ -9,10 +9,10 @@ Mem::Mem(byte chip_addr)
   _chip_addr = chip_addr;
 }
 
-void Mem::storeAll(int data[])
+void Mem::storeAll()
 {
   // multiply matrix size by 2 since each int in it is 2 bytes long
-  byte num_pages = (Constants::MATRIX_SIZE * 2) / Constants::MEM_PAGE_SIZE;
+  int num_pages = (Constants::MATRIX_SIZE * 2) / Constants::MEM_PAGE_SIZE;
   for(int page = 0; page < num_pages; page++)
   {
     Wire.beginTransmission(_chip_addr);
@@ -22,9 +22,9 @@ void Mem::storeAll(int data[])
     for(int index = 0; index < Constants::MEM_PAGE_SIZE; index++)
     {  
       if((index % 2) == 0)  // on even cycle write data MSB
-        Wire.write(data[(((page * Constants::MEM_PAGE_SIZE) + index) / 2)] >> 8);
+        Wire.write((((page * Constants::MEM_PAGE_SIZE) + index) / 2) >> 8);
       else                 //  on odd cycle write data LSB
-        Wire.write(data[(((page * Constants::MEM_PAGE_SIZE) + index) / 2)] & 0xFF);
+        Wire.write((((page * Constants::MEM_PAGE_SIZE) + index) / 2) & 0xFF);
     }
       
     Wire.endTransmission();

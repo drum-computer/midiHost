@@ -10,7 +10,7 @@ private:
   byte _chip_addr;
 public:
   Mem(byte chip_addr);
-  void Mem::storeAll(int data[]);
+  void Mem::storeAll();
   void Mem::recallAll(int data[]);
   void Mem::cellWrite(unsigned int cell_addr, byte data);
   int Mem::readCell(unsigned int eeaddress);

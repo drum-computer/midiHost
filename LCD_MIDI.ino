@@ -49,11 +49,6 @@ void setup()
   midiSender.start();
   lcd.start();
   usbController.start();
-  // load last saved state on startup
-  // mem.recallAll(routingMatrix.matrix);
-  // int cell = mem.readCell(0);
-  // lcd.setCursor(0,0);
-  // lcd.print(cell);
 }
 
 void loop()
@@ -92,11 +87,13 @@ void loop()
         {
           byte display_val = 
               routingMatrix.increaseChannelEXT(&input_midi_channel, &input_cc);
+          
           lcd.updateDisplayValue(cursor_position, display_val);
         } else if(cursor_position == 1)
         {
           byte display_val = 
                     routingMatrix.increaseCCEXT(&input_midi_channel, &input_cc);
+          
           lcd.updateDisplayValue(cursor_position, display_val);
         }
         break;
@@ -104,7 +101,7 @@ void loop()
 
     case Constants::WORK_MODES::SAVE:
       // memory save state
-      mem.storeAll(routingMatrix.matrix);
+      routingMatrix.saveBuffer();
       lcd.showSuccess();
       break;
 
@@ -120,9 +117,9 @@ void loop()
       {
         if(lcd.getCursorPosition() == 0)
         {
-          routingMatrix.clear();
+          // routingMatrix.clear();
           // save cleared matrix to eeprom
-          mem.storeAll(routingMatrix.matrix);
+          mem.storeAll();
           lcd.showResetSuccess();
           work_mode = Constants::WORK_MODES::RESET;
         }

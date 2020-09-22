@@ -13,23 +13,9 @@ private:
   void RoutingMatrix::clearBuffer();
 
 public:
-  int matrix[Constants::MATRIX_SIZE];  
+  int matrix[2];  
   int buffer[2][Constants::BUFFER_SIZE]{0};
   RoutingMatrix();// : mem(Constants::MEM_CHIP_ADDR){};
-
-  void RoutingMatrix::clear();
-
-  int RoutingMatrix::getDestination(int address);
-
-  void RoutingMatrix::setDestination(int address, int value);
-  
-  byte RoutingMatrix::increaseChannel(byte *input_midi_channel, byte *input_cc);
-
-  byte RoutingMatrix::decreaseChannel(byte *input_midi_channel, byte *input_cc);
-
-  byte RoutingMatrix::increaseCC(byte *input_midi_channel, byte *input_cc);
-
-  byte RoutingMatrix::decreaseCC(byte *input_midi_channel, byte *input_cc);
   
   byte RoutingMatrix::increaseChannelEXT(byte *input_midi_channel, byte *input_cc);
 
@@ -39,7 +25,7 @@ public:
   byte RoutingMatrix::decreaseChannelEXT(byte *input_midi_channel, byte *input_cc);
   byte RoutingMatrix::increaseCCEXT(byte *input_midi_channel, byte *input_cc);
   byte RoutingMatrix::decreaseCCEXT(byte *input_midi_channel, byte *input_cc);
-  void RoutingMatrix::saveBuffer(byte buffer_size);
+  void RoutingMatrix::saveBuffer();
 };
 
 
